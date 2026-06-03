@@ -458,15 +458,32 @@ for i in range(1, 6):
     print(f"Count: {i}")`,
   };
 
-  let lang = 'cpp';
-  textarea.value = snippets.cpp;
+  // Detect current lang from URL (lessons.js may have already set editor content)
+  const urlLang = new URLSearchParams(window.location.search).get('lang') || 'cpp';
+  let lang = urlLang === 'python' ? 'python' : 'cpp';
+
+  // Only set default code if lessons.js has NOT already populated the editor
+  if (!textarea.value.trim()) {
+    textarea.value = snippets[lang];
+  }
+
+  // Sync the active lang-switch button to match current lang
+  $$('.lang-switch-btn').forEach((b) => {
+    b.classList.remove('active', 'cpp', 'python');
+    if (b.dataset.lang === lang) b.classList.add('active', lang);
+  });
+
+  // Capture the initial code (set by lessons.js or the default above)
+  let initialCode = textarea.value;
 
   $$('.lang-switch-btn').forEach((btn) => {
     btn.addEventListener('click', () => {
       $$('.lang-switch-btn').forEach((b) => b.classList.remove('active', 'cpp', 'python'));
       btn.classList.add('active', btn.dataset.lang);
       lang = btn.dataset.lang;
+      // When manually switching language, load the generic snippet for that language
       textarea.value = snippets[lang];
+      initialCode = snippets[lang];
       output.innerHTML = '<span class="output-line info">// Output will appear here</span>';
     });
   });
@@ -503,7 +520,7 @@ for i in range(1, 6):
   });
 
   $('#resetBtn')?.addEventListener('click', () => {
-    textarea.value = snippets[lang];
+    textarea.value = initialCode;
     output.innerHTML = '<span class="output-line info">// Output will appear here</span>';
   });
 

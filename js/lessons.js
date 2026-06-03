@@ -1160,7 +1160,7 @@ a ^ b   # {1,4}     — symmetric difference</code></pre></div>`
         return self.__balance
 
     def __str__(self):
-        return f"{self.owner}: ${self.__balance:.2f}"
+        return f"{self.owner}: \${self.__balance:.2f}"
 
 acc = BankAccount("Alice", 1000)
 acc.deposit(500)
@@ -1597,3 +1597,16 @@ function renderNotFound(lang, topic) {
   const titleEl = document.getElementById('lessonTitle');
   if (titleEl) titleEl.textContent = 'Lesson Not Found';
 }
+
+/* ── Auto-init: run as soon as the DOM is ready ──
+   Deferred scripts execute after HTML is parsed (readyState = 'interactive')
+   but before DOMContentLoaded. Call renderLesson() immediately if the
+   lesson shell elements exist on this page. */
+(function initLessons() {
+  if (!document.getElementById('lessonBody')) return; // not the lesson page
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', renderLesson);
+  } else {
+    renderLesson();
+  }
+}());
