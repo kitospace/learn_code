@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projects — CodeCraft</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <script src="../js/app.js" defer></script>
+  <style>
+    .project-detail-modal {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.75);
+      z-index: 2000;
+      display: flex; align-items: center; justify-content: center;
+      padding: 2rem;
+      opacity: 0; pointer-events: none;
+      transition: opacity var(--transition);
+    }
+    .project-detail-modal.open { opacity: 1; pointer-events: all; }
+    .modal-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      max-width: 640px; width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 2rem;
+      transform: translateY(20px);
+      transition: transform var(--transition);
+    }
+    .project-detail-modal.open .modal-card { transform: translateY(0); }
+    .modal-close { float: right; font-size: 1.25rem; color: var(--text-muted); cursor: pointer; margin-left: 1rem; }
+    .steps-list { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.25rem; }
+    .step-item { display: flex; gap: 1rem; align-items: flex-start; }
+    .step-num { width: 28px; height: 28px; border-radius: 50%; background: var(--cpp-dim); border: 1px solid rgba(0,217,255,0.2); color: var(--cpp-color); font-size: 0.75rem; font-weight: 700; font-family: var(--font-code); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .step-text { font-size: 0.875rem; color: var(--text-secondary); padding-top: 0.3rem; line-height: 1.5; }
+    .projects-wrapper { max-width: 1100px; margin: 0 auto; padding: 2.5rem 2rem 4rem; position: relative; z-index: 1; }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="../index.html" class="navbar-logo">
+    <div class="logo-icon">CC</div>
+    <span class="logo-text">CodeCraft</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="../index.html" class="nav-link">Home</a></li>
+    <li><a href="learn.html" class="nav-link">Learn</a></li>
+    <li><a href="lesson.html" class="nav-link">Lessons</a></li>
+    <li><a href="quiz.html" class="nav-link">Quizzes</a></li>
+    <li><a href="projects.html" class="nav-link active">Projects</a></li>
+    <li><a href="cheatsheet.html" class="nav-link">Cheat Sheet</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="theme-toggle" id="themeToggle">☀️</button>
+  </div>
+  <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" id="mobileClose">✕</button>
+  <a href="../index.html" class="mobile-nav-link">Home</a>
+  <a href="learn.html" class="mobile-nav-link">Learn</a>
+  <a href="lesson.html" class="mobile-nav-link">Lessons</a>
+  <a href="quiz.html" class="mobile-nav-link">Quizzes</a>
+  <a href="projects.html" class="mobile-nav-link">Projects</a>
+  <a href="cheatsheet.html" class="mobile-nav-link">Cheat Sheet</a>
+</div>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <span class="section-tag">// build real things</span>
+  <h1 class="page-title">Projects</h1>
+  <p class="page-desc">Apply what you've learned. Guided, step-by-step projects from beginner to advanced.</p>
+</div>
+
+<!-- CONTENT -->
+<div class="projects-wrapper">
+  <!-- FILTER -->
+  <div class="projects-filter">
+    <button class="filter-btn active" data-filter="all">All Projects</button>
+    <button class="filter-btn" data-filter="beginner">Beginner</button>
+    <button class="filter-btn" data-filter="intermediate">Intermediate</button>
+    <button class="filter-btn" data-filter="advanced">Advanced</button>
+    <button class="filter-btn" data-filter="cpp">C++ Only</button>
+    <button class="filter-btn" data-filter="python">Python Only</button>
+  </div>
+
+  <!-- PROJECTS GRID -->
+  <div class="projects-grid">
+
+    <!-- Beginner C++ -->
+    <div class="project-card" data-filter="beginner cpp" onclick="openModal('calculator')">
+      <div class="project-thumb">🧮</div>
+      <div class="project-body">
+        <div class="project-tags">
+          <span class="project-tag tag-beginner">Beginner</span>
+          <span class="project-tag tag-cpp">C++</span>
+        </div>
+        <div class="project-title">Console Calculator</div>
+        <div class="project-desc">Build a command-line calculator with +, −, ×, ÷ operations and input validation.</div>
+        <div class="project-footer">
+          <span class="project-steps">📋 5 steps</span>
+          <span class="project-start">Start Project →</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Beginner Python -->
+    <div class="project-card" data-filter="beginner python" onclick="openModal('guessing-game')">
+      <div class="project-thumb">🎲</div>
+      <div class="project-body">
+        <div class="project-tags">
+          <span class="project-tag tag-beginner">Beginner</span>
+          <span class="project-tag tag-python">Python</span>
+        </div>
+        <div class="project-title">Number Guessing Game</div>
+        <div class="project-desc">Random number generator, user input loop, and feedback — your first interactive Python program.</div>
+        <div class="project-footer">
+          <span class="project-steps">📋 4 steps</span>
+          <span class="project-start">Start Project →</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Beginner C++ -->
+    <div class="project-card" data-filter="beginner cpp" onclick="openModal('student-grades')">
+      <div class="project-thumb">📝</div>
+      <div class="project-body">
+        <div class="project-tags">
+          <span class="project-tag tag-beginner">Beginner</span>
+          <span class="project-tag tag-cpp">C++</span>
+        </div>
+        <div class="project-title">Student Grade Tracker</div>
+        <div class="project-desc">Store and compute student grades using arrays and functions. Practice loops and I/O.</div>
+        <div class="project-footer">
+          <span class="project-steps">📋 5 steps</span>
+          <span class="project-start">Start Project →</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Beginner Python -->
+    <div class="project-card" data-filter="beginner python" onclick="openModal('todo-list')">
+      <div class="project-thumb">✅</div>
+      <div class="project-body">
+        <div class="project-tags">
+          <span class="project-tag tag-beginner">Beginner</span>
+          <span class="project-tag tag-python">Python</span>
+        </div>
+        <div class="project-title">To-Do List App</div>
+        <div class="project-desc">Add, remove, and mark tasks complete. Save to a JSON file for persistence.</div>
+        <div class="project-footer">
+          <span class="project-steps">📋 6 steps</span>
+          <span class="project-start">Start Project →</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Intermediate C++ -->
+    <div class="project-card" data-filter="intermediate cpp" onclick="openModal('library-system')">
+      <div class="project-thumb">📚</div>
+      <div class="project-body">
+        <div class="project-tags">
+          <span class="project-tag tag-intermediate">Intermediate</span>
+          <span class="project-tag tag-cpp">C++</span>
+        </div>
+        <div class="project-title">Library Management System</div>
+        <div class="project-desc">OOP design with Book and Library classes. STL containers, file persistence.</div>
+        <div class="project-footer">
+          <span class="project-steps">📋 8 steps</span>
+          <span class="project-start">Start Project →</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Intermediate Python -->
+    <div class="project-card" data-filter="intermediate python" onclick="openModal('expense-tracker')">
+      <div class="project-thumb">💰</div>
+      <div class="project-body">
+        <div class="project-tags">
+          <span class="project-tag tag-intermediate">Intermediate</span>
+          <span class="project-tag tag-python">Python</span>
+        </div>
+        <div class="project-title">Expense Tracker</div>
+        <div class="project-desc">Classes, file I/O, and CSV export. Categorize expenses and show monthly summaries.</div>
+        <div class="project-footer">
+          <span class="project-steps">📋 7 steps</span>
+          <span class="project-start">Start Project →</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Intermediate C++ -->
+    <div class="project-card" data-filter="intermediate cpp" onclick="openModal('bank-system')">
+      <div class="project-thumb">🏦</div>
+      <div class="project-body">
+        <div class="project-tags">
+          <span class="project-tag tag-intermediate">Intermediate</span>
+          <span class="project-tag tag-cpp">C++</span>
+        </div>
+        <div class="project-title">Banking System</div>
+        <div class="project-desc">Accounts, deposits, withdrawals, and transfer. Inheritance: SavingsAccount vs CheckingAccount.</div>
+        <div class="project-footer">
+          <span class="project-steps">📋 9 steps</span>
+          <span class="project-start">Start Project →</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Intermediate Python -->
+    <div class="project-card" data-filter="intermediate python" onclick="openModal('web-scraper')">
+      <div class="project-thumb">🕷️</div>
+      <div class="project-body">
+        <div class="project-tags">
+          <span class="project-tag tag-intermediate">Intermediate</span>
+          <span class="project-tag tag-python">Python</span>
+        </div>
+        <div class="project-title">Web Scraper</div>
+        <div class="project-desc">requests + BeautifulSoup to scrape a website. Save data to CSV. Handle errors gracefully.</div>
+        <div class="project-footer">
+          <span class="project-steps">📋 7 steps</span>
+          <span class="project-start">Start Project →</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Advanced C++ -->
+    <div class="project-card" data-filter="advanced cpp" onclick="openModal('chat-app')">
+      <div class="project-thumb">💬</div>
+      <div class="project-body">
+        <div class="project-tags">
+          <span class="project-tag tag-advanced">Advanced</span>
+          <span class="project-tag tag-cpp">C++</span>
+        </div>
+        <div class="project-title">Multi-Threaded Chat App</div>
+        <div class="project-desc">TCP sockets, std::thread, mutex for thread safety. Client-server architecture in C++.</div>
+        <div class="project-footer">
+          <span class="project-steps">📋 12 steps</span>
+          <span class="project-start">Start Project →</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Advanced Python -->
+    <div class="project-card" data-filter="advanced python" onclick="openModal('rest-api')">
+      <div class="project-thumb">🔌</div>
+      <div class="project-body">
+        <div class="project-tags">
+          <span class="project-tag tag-advanced">Advanced</span>
+          <span class="project-tag tag-python">Python</span>
+        </div>
+        <div class="project-title">REST API with FastAPI</div>
+        <div class="project-desc">Build a CRUD API with async endpoints, Pydantic models, SQLite, and JWT authentication.</div>
+        <div class="project-footer">
+          <span class="project-steps">📋 10 steps</span>
+          <span class="project-start">Start Project →</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Advanced C++ -->
+    <div class="project-card" data-filter="advanced cpp" onclick="openModal('dsa-visualizer')">
+      <div class="project-thumb">🌲</div>
+      <div class="project-body">
+        <div class="project-tags">
+          <span class="project-tag tag-advanced">Advanced</span>
+          <span class="project-tag tag-cpp">C++</span>
+        </div>
+        <div class="project-title">DSA Visualizer (Console)</div>
+        <div class="project-desc">Console animations for BST insert/delete/search, heap operations, and BFS/DFS traversal.</div>
+        <div class="project-footer">
+          <span class="project-steps">📋 11 steps</span>
+          <span class="project-start">Start Project →</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Advanced Python -->
+    <div class="project-card" data-filter="advanced python" onclick="openModal('ml-classifier')">
+      <div class="project-thumb">🤖</div>
+      <div class="project-body">
+        <div class="project-tags">
+          <span class="project-tag tag-advanced">Advanced</span>
+          <span class="project-tag tag-python">Python</span>
+        </div>
+        <div class="project-title">ML Text Classifier</div>
+        <div class="project-desc">Train a text classifier using scikit-learn. TF-IDF features, confusion matrix, model export.</div>
+        <div class="project-footer">
+          <span class="project-steps">📋 9 steps</span>
+          <span class="project-start">Start Project →</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PROJECT DETAIL MODAL -->
+<div class="project-detail-modal" id="projectModal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-card" id="modalContent"></div>
+</div>
+
+<script>
+const projectData = {
+  calculator: {
+    icon: '🧮', title: 'Console Calculator', lang: 'C++', level: 'Beginner',
+    desc: 'Build a fully functional command-line calculator using C++ with clean input/output and error handling.',
+    steps: [
+      'Set up main.cpp with basic structure and include <iostream>',
+      'Create a function for each operation: add, subtract, multiply, divide',
+      'Build the input loop: prompt for two numbers and an operator',
+      'Add input validation (check for division by zero, invalid operators)',
+      'Add a loop so the user can perform multiple calculations',
+    ],
+    skills: ['Functions', 'Loops', 'Input/Output', 'Conditionals'],
+  },
+  'guessing-game': {
+    icon: '🎲', title: 'Number Guessing Game', lang: 'Python', level: 'Beginner',
+    desc: 'Create an interactive game where the computer picks a random number and guides the user to guess it.',
+    steps: [
+      'Import random and generate a secret number between 1 and 100',
+      'Create a while loop that continues until the user guesses correctly',
+      'Give "Too high" / "Too low" feedback on each guess',
+      'Count attempts and display final score when the user wins',
+    ],
+    skills: ['random module', 'while loops', 'input()', 'conditionals'],
+  },
+  'bank-system': {
+    icon: '🏦', title: 'Banking System', lang: 'C++', level: 'Intermediate',
+    desc: 'A full OOP banking simulation with account management, transactions, and inheritance.',
+    steps: [
+      'Design the Account base class with balance, accountNumber, owner',
+      'Add deposit() and withdraw() methods with validation',
+      'Create SavingsAccount subclass with interest rate and interest calculation',
+      'Create CheckingAccount subclass with overdraft limit',
+      'Build a Bank class using vector<Account*> to hold multiple accounts',
+      'Add transfer() between accounts',
+      'Implement file I/O to save/load accounts (CSV format)',
+      'Add menu-driven interface with a loop',
+      'Add exception handling for invalid operations',
+    ],
+    skills: ['OOP', 'Inheritance', 'STL vector', 'File I/O', 'Exceptions'],
+  },
+  'chat-app': {
+    icon: '💬', title: 'Multi-Threaded Chat App', lang: 'C++', level: 'Advanced',
+    desc: 'A TCP socket-based chat application using POSIX sockets and C++ threads.',
+    steps: [
+      'Learn POSIX socket API: socket(), bind(), listen(), accept(), connect()',
+      'Build the server: accept multiple clients using a thread per connection',
+      'Build the client: one thread for sending, one for receiving',
+      'Use std::mutex to protect the shared client list on the server',
+      'Broadcast messages from one client to all others',
+      'Add username registration on connect',
+      'Handle disconnections gracefully (detect closed sockets)',
+      'Add timestamps to messages',
+      'Add a /quit command and clean shutdown',
+      'Test with multiple terminal windows',
+      'Bonus: add private messaging with /msg username',
+      'Bonus: add message history on connect',
+    ],
+    skills: ['POSIX Sockets', 'Multithreading', 'mutex', 'Smart Pointers'],
+  },
+  'rest-api': {
+    icon: '🔌', title: 'REST API with FastAPI', lang: 'Python', level: 'Advanced',
+    desc: 'Build a production-quality REST API with async endpoints, database, and authentication.',
+    steps: [
+      'pip install fastapi uvicorn sqlalchemy pydantic python-jose',
+      'Design Pydantic models for request/response schemas',
+      'Set up SQLAlchemy with SQLite and create database models',
+      'Implement CRUD endpoints: POST /items, GET /items/{id}, PUT, DELETE',
+      'Add user registration and login endpoints',
+      'Implement JWT token generation and validation',
+      'Add auth middleware with Depends() for protected routes',
+      'Write async database operations with async SQLAlchemy',
+      'Add pagination and filtering query parameters',
+      'Test with FastAPI\'s built-in Swagger UI at /docs',
+    ],
+    skills: ['FastAPI', 'Pydantic', 'SQLAlchemy', 'JWT', 'Async/Await'],
+  },
+};
+
+function openModal(id) {
+  const data = projectData[id];
+  if (!data) return;
+  const langColor = data.lang === 'C++' ? 'var(--cpp-color)' : 'var(--python-color)';
+  const levelClass = data.level === 'Beginner' ? 'badge-basic' : data.level === 'Intermediate' ? 'badge-intermediate' : 'badge-advanced';
+  document.getElementById('modalContent').innerHTML = `
+    <div style="display:flex;align-items:flex-start;gap:1rem;margin-bottom:1.5rem">
+      <div style="font-size:2.5rem;line-height:1">${data.icon}</div>
+      <div style="flex:1">
+        <button class="modal-close" onclick="closeModal()">✕</button>
+        <h2 style="font-size:1.3rem;font-weight:800;margin-bottom:0.4rem">${data.title}</h2>
+        <div style="display:flex;gap:0.5rem">
+          <span class="level-badge ${levelClass}">${data.level}</span>
+          <span style="font-family:var(--font-code);font-size:0.72rem;padding:0.2rem 0.65rem;border-radius:100px;background:rgba(0,0,0,0.2);color:${langColor};border:1px solid ${langColor}30">${data.lang}</span>
+        </div>
+      </div>
+    </div>
+    <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:1.5rem;line-height:1.65">${data.desc}</p>
+    <div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:1.5rem">
+      ${data.skills.map(s => `<span style="font-family:var(--font-code);font-size:0.72rem;padding:0.2rem 0.65rem;border-radius:100px;background:var(--bg-secondary);border:1px solid var(--border);color:var(--text-secondary)">${s}</span>`).join('')}
+    </div>
+    <h3 style="font-size:0.9rem;font-weight:700;margin-bottom:0.25rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);font-family:var(--font-code)">Step-by-Step Guide</h3>
+    <div class="steps-list">
+      ${data.steps.map((step, i) => `
+        <div class="step-item">
+          <div class="step-num">${i+1}</div>
+          <div class="step-text">${step}</div>
+        </div>
+      `).join('')}
+    </div>
+    <div style="margin-top:2rem;display:flex;gap:0.75rem">
+      <a href="lesson.html" class="btn btn-primary" style="padding:0.65rem 1.25rem">Open Editor →</a>
+      <button onclick="closeModal()" class="btn btn-outline" style="padding:0.65rem 1.25rem">Close</button>
+    </div>`;
+  document.getElementById('projectModal').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('projectModal').classList.remove('open');
+}
+</script>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-logo"><div class="logo-icon">CC</div><span class="logo-text">CodeCraft</span></div>
+      <p class="footer-tagline">A free, self-paced platform for learning C++ and Python.</p>
+    </div>
+    <div>
+      <div class="footer-col-title">Navigate</div>
+      <a href="../index.html" class="footer-link">Home</a>
+      <a href="learn.html" class="footer-link">Learn</a>
+      <a href="quiz.html" class="footer-link">Quizzes</a>
+      <a href="cheatsheet.html" class="footer-link">Cheat Sheet</a>
+    </div>
+  </div>
+  <div class="footer-bottom"><span>© 2025 CodeCraft.</span></div>
+</footer>
+</body>
+</html>

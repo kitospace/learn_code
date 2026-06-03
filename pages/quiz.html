@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quizzes — CodeCraft</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <script src="../js/app.js" defer></script>
+  <style>
+    .quiz-topic-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem;
+      max-width: 900px;
+      margin: 0 auto 3.5rem;
+    }
+    .quiz-topic-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      cursor: pointer;
+      transition: all var(--transition);
+      text-align: center;
+    }
+    .quiz-topic-card:hover { transform: translateY(-3px); border-color: var(--border-glow); box-shadow: var(--shadow); }
+    .quiz-topic-card.selected { border-color: var(--cpp-color); background: var(--cpp-dim); box-shadow: 0 0 0 2px var(--cpp-color)30; }
+    .quiz-topic-card.selected .title { color: var(--cpp-color); }
+    .quiz-topic-card .icon { font-size: 2rem; margin-bottom: 0.5rem; }
+    .quiz-topic-card .title { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .quiz-topic-card .meta { font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-code); }
+    .quiz-topic-card .bar { height: 3px; background: var(--border); border-radius: 2px; margin-top: 0.75rem; overflow: hidden; }
+    .quiz-topic-card .bar-fill { height: 100%; border-radius: 2px; }
+    .quiz-wrapper { max-width: 760px; margin: 0 auto; padding: 0 2rem 4rem; position: relative; z-index: 1; }
+    .fill-blank-question pre {
+      background: #0d1117;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      font-family: var(--font-code);
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="../index.html" class="navbar-logo">
+    <div class="logo-icon">CC</div>
+    <span class="logo-text">CodeCraft</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="../index.html" class="nav-link">Home</a></li>
+    <li><a href="learn.html" class="nav-link">Learn</a></li>
+    <li><a href="lesson.html" class="nav-link">Lessons</a></li>
+    <li><a href="quiz.html" class="nav-link active">Quizzes</a></li>
+    <li><a href="projects.html" class="nav-link">Projects</a></li>
+    <li><a href="cheatsheet.html" class="nav-link">Cheat Sheet</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="theme-toggle" id="themeToggle">☀️</button>
+  </div>
+  <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" id="mobileClose">✕</button>
+  <a href="../index.html" class="mobile-nav-link">Home</a>
+  <a href="learn.html" class="mobile-nav-link">Learn</a>
+  <a href="lesson.html" class="mobile-nav-link">Lessons</a>
+  <a href="quiz.html" class="mobile-nav-link">Quizzes</a>
+  <a href="projects.html" class="mobile-nav-link">Projects</a>
+  <a href="cheatsheet.html" class="mobile-nav-link">Cheat Sheet</a>
+</div>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <span class="section-tag">// test your knowledge</span>
+  <h1 class="page-title">Quizzes &amp; Exercises</h1>
+  <p class="page-desc">MCQs, fill-in-the-blank, and coding challenges with instant explanations.</p>
+</div>
+
+<!-- TOPIC SELECTOR -->
+<section class="section" style="padding-top:2.5rem;padding-bottom:0">
+  <div class="section-header" style="margin-bottom:1.75rem">
+    <span class="section-tag">// choose a topic</span>
+    <h2 class="section-title" style="font-size:1.5rem">Pick a topic to quiz</h2>
+  </div>
+  <div class="quiz-topic-grid">
+    <div class="quiz-topic-card selected" data-quiz-set="mixed">
+      <div class="icon">⚡</div>
+      <div class="title">Mixed — C++ &amp; Python</div>
+      <div class="meta">5 questions · All levels</div>
+      <div class="bar"><div class="bar-fill" style="width:100%;background:linear-gradient(90deg,var(--cpp-color),var(--python-color))"></div></div>
+    </div>
+    <div class="quiz-topic-card" data-quiz-set="cpp-variables">
+      <div class="icon">📦</div>
+      <div class="title">C++ Variables</div>
+      <div class="meta">5 questions · Basic</div>
+      <div class="bar"><div class="bar-fill" style="width:0%;background:var(--cpp-color)"></div></div>
+    </div>
+    <div class="quiz-topic-card" data-quiz-set="cpp-pointers">
+      <div class="icon">📍</div>
+      <div class="title">C++ Pointers</div>
+      <div class="meta">4 questions · Basic</div>
+      <div class="bar"><div class="bar-fill" style="width:0%;background:var(--cpp-color)"></div></div>
+    </div>
+    <div class="quiz-topic-card" data-quiz-set="python-basics">
+      <div class="icon">🐍</div>
+      <div class="title">Python Basics</div>
+      <div class="meta">5 questions · Basic</div>
+      <div class="bar"><div class="bar-fill" style="width:0%;background:var(--python-color)"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ACTIVE QUIZ -->
+<div class="quiz-wrapper">
+  <div class="section-header" style="margin-bottom:1.75rem">
+    <span class="section-tag">// active quiz</span>
+    <h2 class="section-title" style="font-size:1.5rem" id="quizTitle">Mixed Quiz — C++ &amp; Python</h2>
+  </div>
+
+  <div class="quiz-header">
+    <span class="quiz-label">Question <span id="quizCurrent">1</span> of <span id="quizTotal">5</span></span>
+    <span class="quiz-label">Score: <span id="quizScore">0</span></span>
+  </div>
+  <div class="quiz-progress-bar">
+    <div class="quiz-progress-fill" id="quizProgressFill" style="width:0%"></div>
+  </div>
+
+  <div id="quizContainer"></div>
+
+  <!-- Fill in the blank bonus section -->
+  <div style="margin-top:3rem">
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem">
+      <h3 style="font-size:1.1rem;font-weight:700">Fill in the Blank</h3>
+      <span class="stage-badge badge-basic">C++</span>
+    </div>
+    <div class="question-card fill-blank-question">
+      <div class="question-type">FILL IN THE BLANK</div>
+      <p class="question-text">Complete the code to declare a pointer to an integer and initialize it with the address of <code class="inline-code">num</code>:</p>
+      <pre><span class="t-type" style="color:#ffcb6b">int</span> num = <span class="t-num" style="color:#f78c6c">42</span>;
+<span class="t-type" style="color:#ffcb6b">int</span>___ ptr = ___num;</pre>
+      <input type="text" class="fill-blank-input" id="fillBlank1" placeholder="Enter the missing syntax: e.g.  * and &" />
+      <div class="quiz-actions" style="margin-top:0.75rem">
+        <button class="btn btn-primary" onclick="checkFill()">Check Answer</button>
+      </div>
+      <div class="quiz-feedback" id="fillFeedback"></div>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;margin-top:2rem">
+      <h3 style="font-size:1.1rem;font-weight:700">Fill in the Blank</h3>
+      <span class="stage-badge badge-basic">Python</span>
+    </div>
+    <div class="question-card fill-blank-question">
+      <div class="question-type">FILL IN THE BLANK</div>
+      <p class="question-text">Complete the Python list comprehension that creates a list of squares of even numbers from 1 to 10:</p>
+      <pre>squares = [x**2 ___ x ___ range(1, 11) ___ x % 2 == 0]
+# Expected: [4, 16, 36, 64, 100]</pre>
+      <input type="text" class="fill-blank-input" id="fillBlank2" placeholder="Enter: for, in, if" />
+      <div class="quiz-actions" style="margin-top:0.75rem">
+        <button class="btn btn-primary" onclick="checkFill2()">Check Answer</button>
+      </div>
+      <div class="quiz-feedback" id="fillFeedback2"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function checkFill() {
+  const val = document.getElementById('fillBlank1').value.trim().toLowerCase();
+  const fb = document.getElementById('fillFeedback');
+  if (val.includes('*') && val.includes('&')) {
+    fb.className = 'quiz-feedback visible correct';
+    fb.innerHTML = '✓ Correct! <code>int* ptr = &amp;num;</code> — the <code>*</code> declares a pointer and <code>&amp;</code> takes the address.';
+  } else {
+    fb.className = 'quiz-feedback visible wrong';
+    fb.innerHTML = '✗ Not quite. The answer is <code>int* ptr = &amp;num;</code> — use <code>*</code> to declare a pointer type and <code>&amp;</code> to get the address.';
+  }
+}
+function checkFill2() {
+  const val = document.getElementById('fillBlank2').value.trim().toLowerCase();
+  const fb = document.getElementById('fillFeedback2');
+  if (val.includes('for') && val.includes('in') && val.includes('if')) {
+    fb.className = 'quiz-feedback visible correct';
+    fb.innerHTML = '✓ Correct! <code>[x**2 for x in range(1, 11) if x % 2 == 0]</code> — list comprehension with a filter condition.';
+  } else {
+    fb.className = 'quiz-feedback visible wrong';
+    fb.innerHTML = '✗ Not quite. The three keywords are <code>for</code>, <code>in</code>, and <code>if</code> — giving: <code>[x**2 for x in range(1, 11) if x % 2 == 0]</code>.';
+  }
+}
+</script>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-logo"><div class="logo-icon">CC</div><span class="logo-text">CodeCraft</span></div>
+      <p class="footer-tagline">A free, self-paced platform for learning C++ and Python.</p>
+    </div>
+    <div>
+      <div class="footer-col-title">Navigate</div>
+      <a href="../index.html" class="footer-link">Home</a>
+      <a href="learn.html" class="footer-link">Learn</a>
+      <a href="quiz.html" class="footer-link">Quizzes</a>
+      <a href="projects.html" class="footer-link">Projects</a>
+    </div>
+  </div>
+  <div class="footer-bottom"><span>© 2025 CodeCraft.</span></div>
+</footer>
+</body>
+</html>

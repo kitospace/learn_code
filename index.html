@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CodeCraft — Master C++ & Python</title>
+  <meta name="description" content="Learn C++ and Python from absolute beginner to advanced. Interactive lessons, live code editor, quizzes, and real-world projects." />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
+  <script src="js/app.js" defer></script>
+  <style>
+    .hero { padding-top: 8rem; }
+  </style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar">
+  <a href="index.html" class="navbar-logo">
+    <div class="logo-icon">CC</div>
+    <span class="logo-text">CodeCraft</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html" class="nav-link active">Home</a></li>
+    <li><a href="pages/learn.html" class="nav-link">Learn</a></li>
+    <li><a href="pages/lesson.html" class="nav-link">Lessons</a></li>
+    <li><a href="pages/quiz.html" class="nav-link">Quizzes</a></li>
+    <li><a href="pages/projects.html" class="nav-link">Projects</a></li>
+    <li><a href="pages/cheatsheet.html" class="nav-link">Cheat Sheet</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="theme-toggle" id="themeToggle" title="Toggle theme">☀️</button>
+    <a href="pages/learn.html" class="btn btn-primary">Start Learning →</a>
+  </div>
+  <button class="hamburger" id="hamburger" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" id="mobileClose">✕</button>
+  <a href="index.html" class="mobile-nav-link">Home</a>
+  <a href="pages/learn.html" class="mobile-nav-link">Learn</a>
+  <a href="pages/lesson.html" class="mobile-nav-link">Lessons</a>
+  <a href="pages/quiz.html" class="mobile-nav-link">Quizzes</a>
+  <a href="pages/projects.html" class="mobile-nav-link">Projects</a>
+  <a href="pages/cheatsheet.html" class="mobile-nav-link">Cheat Sheet</a>
+</div>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div>
+    <div class="hero-badge animate-fade-up">Free · Self-Paced · Beginner to Advanced</div>
+    <h1 class="hero-title animate-fade-up delay-1">
+      <span class="line-1">The best way to</span>
+      <span class="line-2" id="typingText">master C++ &amp; Python</span>
+    </h1>
+    <p class="hero-subtitle animate-fade-up delay-2">Structured learning paths, interactive code editor, real-world projects, and instant quizzes — everything you need to go from zero to hero.</p>
+    <div class="hero-actions animate-fade-up delay-3">
+      <a href="pages/learn.html?lang=cpp" class="hero-btn hero-btn-cpp">
+        <span>⚙</span> Learn C++
+      </a>
+      <a href="pages/learn.html?lang=python" class="hero-btn hero-btn-python">
+        <span>🐍</span> Learn Python
+      </a>
+    </div>
+
+    <!-- Code Window -->
+    <div class="hero-code-window animate-fade-up delay-4">
+      <div class="code-window-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="code-window-title">hello_world.cpp &nbsp;·&nbsp; hello_world.py</span>
+      </div>
+      <div class="code-window-body">
+        <div class="code-pane">
+          <span class="code-pane-label cpp">C++</span>
+          <pre><span class="t-comment">// Hello World in C++</span>
+<span class="t-keyword">#include</span> <span class="t-string">&lt;iostream&gt;</span>
+<span class="t-keyword">using namespace</span> <span class="t-cpp">std</span><span class="t-op">;</span>
+
+<span class="t-type">int</span> <span class="t-func">main</span><span class="t-op">() {</span>
+  <span class="t-cpp">cout</span> <span class="t-op">&lt;&lt;</span> <span class="t-string">"Hello, World!"</span> <span class="t-op">&lt;&lt;</span> <span class="t-cpp">endl</span><span class="t-op">;</span>
+
+  <span class="t-keyword">for</span> <span class="t-op">(</span><span class="t-type">int</span> i <span class="t-op">=</span> <span class="t-num">0</span><span class="t-op">;</span> i <span class="t-op">&lt;</span> <span class="t-num">3</span><span class="t-op">;</span> i<span class="t-op">++) {</span>
+    <span class="t-cpp">cout</span> <span class="t-op">&lt;&lt;</span> <span class="t-string">"C++ is "</span> <span class="t-op">&lt;&lt;</span> i <span class="t-op">&lt;&lt;</span> <span class="t-cpp">endl</span><span class="t-op">;</span>
+  <span class="t-op">}</span>
+  <span class="t-keyword">return</span> <span class="t-num">0</span><span class="t-op">;</span>
+<span class="t-op">}</span><span class="typing-cursor"></span></pre>
+        </div>
+        <div class="code-pane">
+          <span class="code-pane-label py">Python</span>
+          <pre><span class="t-comment"># Hello World in Python</span>
+
+<span class="t-func">print</span><span class="t-op">(</span><span class="t-string">"Hello, World!"</span><span class="t-op">)</span>
+
+<span class="t-keyword">for</span> i <span class="t-keyword">in</span> <span class="t-func">range</span><span class="t-op">(</span><span class="t-num">3</span><span class="t-op">):</span>
+    <span class="t-func">print</span><span class="t-op">(</span>
+        <span class="t-string">f"Python is {</span>i<span class="t-string">}"</span>
+    <span class="t-op">)</span>
+
+
+
+
+</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STATS ===== -->
+<div class="stats-strip">
+  <div class="stats-grid">
+    <div class="stat-item">
+      <div class="stat-num" data-target="500" data-suffix="+">0+</div>
+      <div class="stat-label">Concepts Covered</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" data-target="120" data-suffix="+">0+</div>
+      <div class="stat-label">Interactive Lessons</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" data-target="50" data-suffix="+">0+</div>
+      <div class="stat-label">Real Projects</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" data-target="300" data-suffix="+">0+</div>
+      <div class="stat-label">Practice Exercises</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FEATURES ===== -->
+<section class="section">
+  <div class="section-header">
+    <span class="section-tag">// why codecraft</span>
+    <h2 class="section-title">Everything you need to learn</h2>
+    <p class="section-desc">Built for learners who want more than syntax — we teach you to think like a programmer.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card animate-fade-up">
+      <div class="feature-icon">⚡</div>
+      <h3 class="feature-title">Live Code Editor</h3>
+      <p class="feature-desc">Write and run C++ and Python directly in the browser. No setup needed — just code.</p>
+    </div>
+    <div class="feature-card animate-fade-up delay-1">
+      <div class="feature-icon">🗺️</div>
+      <h3 class="feature-title">Structured Roadmaps</h3>
+      <p class="feature-desc">Visual learning paths from Basics → Intermediate → Advanced with progress tracking.</p>
+    </div>
+    <div class="feature-card animate-fade-up delay-2">
+      <div class="feature-icon">🧠</div>
+      <h3 class="feature-title">Instant Quizzes</h3>
+      <p class="feature-desc">MCQs, fill-in-the-blank, and coding challenges with instant explanations per topic.</p>
+    </div>
+    <div class="feature-card animate-fade-up delay-3">
+      <div class="feature-icon">🏗️</div>
+      <h3 class="feature-title">Real Projects</h3>
+      <p class="feature-desc">Guided beginner-to-advanced projects: Calculator → Bank System → Chat App.</p>
+    </div>
+    <div class="feature-card animate-fade-up">
+      <div class="feature-icon">📖</div>
+      <h3 class="feature-title">Cheat Sheets</h3>
+      <p class="feature-desc">Quick-reference cards for syntax, keywords, STL, and standard library functions.</p>
+    </div>
+    <div class="feature-card animate-fade-up delay-1">
+      <div class="feature-icon">🔖</div>
+      <h3 class="feature-title">Bookmark Lessons</h3>
+      <p class="feature-desc">Save lessons to review later. Progress tracked in your browser — no signup needed.</p>
+    </div>
+    <div class="feature-card animate-fade-up delay-2">
+      <div class="feature-icon">🌗</div>
+      <h3 class="feature-title">Dark / Light Mode</h3>
+      <p class="feature-desc">Terminal-inspired dark theme or clean light mode. Switch anytime — it's saved automatically.</p>
+    </div>
+    <div class="feature-card animate-fade-up delay-3">
+      <div class="feature-icon">📱</div>
+      <h3 class="feature-title">Mobile Friendly</h3>
+      <p class="feature-desc">Learn on any device. Fully responsive layout optimized for phones, tablets, and desktops.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== LANGUAGE CARDS ===== -->
+<section class="section" style="background: var(--bg-secondary); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="section-header">
+    <span class="section-tag">// choose your path</span>
+    <h2 class="section-title">Two languages, one platform</h2>
+    <p class="section-desc">Master the most powerful system-level language and the most versatile scripting language.</p>
+  </div>
+  <div class="lang-cards">
+    <div class="lang-card cpp animate-fade-up">
+      <div class="lang-logo">⚙️</div>
+      <h3 class="lang-name">C++</h3>
+      <p class="lang-desc">The language of systems, games, and high-performance software. Master memory, speed, and power.</p>
+      <div class="lang-topics">
+        <span class="topic-tag">Variables</span>
+        <span class="topic-tag">Pointers</span>
+        <span class="topic-tag">OOP</span>
+        <span class="topic-tag">STL</span>
+        <span class="topic-tag">Templates</span>
+        <span class="topic-tag">Memory</span>
+        <span class="topic-tag">Threads</span>
+        <span class="topic-tag">DSA</span>
+      </div>
+      <a href="pages/learn.html?lang=cpp" class="lang-cta">Start C++ Path →</a>
+    </div>
+    <div class="lang-card python animate-fade-up delay-1">
+      <div class="lang-logo">🐍</div>
+      <h3 class="lang-name">Python</h3>
+      <p class="lang-desc">The language of data science, AI, and rapid development. Clean syntax, infinite possibilities.</p>
+      <div class="lang-topics">
+        <span class="topic-tag">Lists</span>
+        <span class="topic-tag">Dicts</span>
+        <span class="topic-tag">OOP</span>
+        <span class="topic-tag">Decorators</span>
+        <span class="topic-tag">Generators</span>
+        <span class="topic-tag">Async</span>
+        <span class="topic-tag">ML Basics</span>
+        <span class="topic-tag">DSA</span>
+      </div>
+      <a href="pages/learn.html?lang=python" class="lang-cta">Start Python Path →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ROADMAP PREVIEW ===== -->
+<section class="section">
+  <div class="section-header">
+    <span class="section-tag">// learning roadmap</span>
+    <h2 class="section-title">Your path from zero to mastery</h2>
+    <p class="section-desc">Every concept introduced at the right time. No gaps, no overwhelm.</p>
+  </div>
+  <div class="roadmap">
+    <div class="roadmap-tabs">
+      <button class="roadmap-tab active cpp" data-lang="cpp">⚙ C++ Path</button>
+      <button class="roadmap-tab" data-lang="python">🐍 Python Path</button>
+    </div>
+
+    <!-- C++ Roadmap -->
+    <div class="roadmap-content active" id="roadmap-cpp">
+      <div class="roadmap-stages">
+        <div class="roadmap-stage open">
+          <div class="stage-header">
+            <span class="stage-badge badge-basic">Basic</span>
+            <span class="stage-title">Foundations of C++</span>
+            <span class="stage-count">8 topics</span>
+            <span class="stage-toggle">▼</span>
+          </div>
+          <div class="stage-topics">
+            <div class="topic-item done"><span class="dot-indicator"></span>Hello World</div>
+            <div class="topic-item done"><span class="dot-indicator"></span>Variables & Data Types</div>
+            <div class="topic-item in-progress"><span class="dot-indicator"></span>Operators</div>
+            <div class="topic-item"><span class="dot-indicator"></span>Control Flow</div>
+            <div class="topic-item"><span class="dot-indicator"></span>Loops</div>
+            <div class="topic-item"><span class="dot-indicator"></span>Functions</div>
+            <div class="topic-item"><span class="dot-indicator"></span>Arrays</div>
+            <div class="topic-item"><span class="dot-indicator"></span>Pointers</div>
+          </div>
+        </div>
+        <div class="roadmap-stage">
+          <div class="stage-header">
+            <span class="stage-badge badge-intermediate">Intermediate</span>
+            <span class="stage-title">Object-Oriented C++</span>
+            <span class="stage-count">7 topics</span>
+            <span class="stage-toggle">▼</span>
+          </div>
+          <div class="stage-topics">
+            <div class="topic-item"><span class="dot-indicator"></span>Classes & Objects</div>
+            <div class="topic-item"><span class="dot-indicator"></span>Inheritance</div>
+            <div class="topic-item"><span class="dot-indicator"></span>Polymorphism</div>
+            <div class="topic-item"><span class="dot-indicator"></span>STL — Vector</div>
+            <div class="topic-item"><span class="dot-indicator"></span>STL — Map/Set</div>
+            <div class="topic-item"><span class="dot-indicator"></span>File I/O</div>
+            <div class="topic-item"><span class="dot-indicator"></span>Exception Handling</div>
+          </div>
+        </div>
+        <div class="roadmap-stage">
+          <div class="stage-header">
+            <span class="stage-badge badge-advanced">Advanced</span>
+            <span class="stage-title">Systems & Algorithms</span>
+            <span class="stage-count">8 topics</span>
+            <span class="stage-toggle">▼</span>
+          </div>
+          <div class="stage-topics">
+            <div class="topic-item"><span class="dot-indicator"></span>Templates</div>
+            <div class="topic-item"><span class="dot-indicator"></span>Smart Pointers</div>
+            <div class="topic-item"><span class="dot-indicator"></span>Move Semantics</div>
+            <div class="topic-item"><span class="dot-indicator"></span>Multithreading</div>
+            <div class="topic-item"><span class="dot-indicator"></span>DSA — Sorting</div>
+            <div class="topic-item"><span class="dot-indicator"></span>DSA — Trees</div>
+            <div class="topic-item"><span class="dot-indicator"></span>DSA — Graphs</div>
+            <div class="topic-item"><span class="dot-indicator"></span>Design Patterns</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Python Roadmap -->
+    <div class="roadmap-content" id="roadmap-python">
+      <div class="roadmap-stages">
+        <div class="roadmap-stage open">
+          <div class="stage-header">
+            <span class="stage-badge badge-basic">Basic</span>
+            <span class="stage-title">Python Fundamentals</span>
+            <span class="stage-count">8 topics</span>
+            <span class="stage-toggle">▼</span>
+          </div>
+          <div class="stage-topics">
+            <div class="topic-item"><span class="dot-indicator"></span>Hello World</div>
+            <div class="topic-item"><span class="dot-indicator"></span>Variables & Types</div>
+            <div class="topic-item"><span class="dot-indicator"></span>Operators</div>
+            <div class="topic-item"><span class="dot-indicator"></span>Control Flow</div>
+            <div class="topic-item"><span class="dot-indicator"></span>Loops</div>
+            <div class="topic-item"><span class="dot-indicator"></span>Functions</div>
+            <div class="topic-item"><span class="dot-indicator"></span>Lists & Tuples</div>
+            <div class="topic-item"><span class="dot-indicator"></span>Dicts & Sets</div>
+          </div>
+        </div>
+        <div class="roadmap-stage">
+          <div class="stage-header">
+            <span class="stage-badge badge-intermediate">Intermediate</span>
+            <span class="stage-title">Python Power Features</span>
+            <span class="stage-count">7 topics</span>
+            <span class="stage-toggle">▼</span>
+          </div>
+          <div class="stage-topics">
+            <div class="topic-item"><span class="dot-indicator"></span>Classes & OOP</div>
+            <div class="topic-item"><span class="dot-indicator"></span>Modules & Packages</div>
+            <div class="topic-item"><span class="dot-indicator"></span>File I/O</div>
+            <div class="topic-item"><span class="dot-indicator"></span>List Comprehensions</div>
+            <div class="topic-item"><span class="dot-indicator"></span>Decorators</div>
+            <div class="topic-item"><span class="dot-indicator"></span>Error Handling</div>
+            <div class="topic-item"><span class="dot-indicator"></span>Iterators</div>
+          </div>
+        </div>
+        <div class="roadmap-stage">
+          <div class="stage-header">
+            <span class="stage-badge badge-advanced">Advanced</span>
+            <span class="stage-title">Expert Python</span>
+            <span class="stage-count">8 topics</span>
+            <span class="stage-toggle">▼</span>
+          </div>
+          <div class="stage-topics">
+            <div class="topic-item"><span class="dot-indicator"></span>Generators</div>
+            <div class="topic-item"><span class="dot-indicator"></span>Async / Await</div>
+            <div class="topic-item"><span class="dot-indicator"></span>Metaclasses</div>
+            <div class="topic-item"><span class="dot-indicator"></span>Context Managers</div>
+            <div class="topic-item"><span class="dot-indicator"></span>DSA — Sorting</div>
+            <div class="topic-item"><span class="dot-indicator"></span>DSA — Trees</div>
+            <div class="topic-item"><span class="dot-indicator"></span>DSA — Graphs</div>
+            <div class="topic-item"><span class="dot-indicator"></span>ML Basics (NumPy)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:2.5rem">
+    <a href="pages/learn.html" class="btn btn-primary" style="padding:0.75rem 2rem;font-size:1rem">View Full Roadmap →</a>
+  </div>
+</section>
+
+<!-- ===== TESTIMONIALS ===== -->
+<section class="section" style="background:var(--bg-secondary);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+  <div class="section-header">
+    <span class="section-tag">// learner stories</span>
+    <h2 class="section-title">Loved by learners</h2>
+  </div>
+  <div class="features-grid" style="max-width:900px">
+    <div class="feature-card animate-fade-up" style="border-left:2px solid var(--cpp-color);">
+      <p style="color:var(--text-secondary);font-size:0.9rem;line-height:1.7;margin-bottom:1rem">"The side-by-side C++ / Python comparison on the homepage alone saved me hours of confusion. Best platform for learning both languages simultaneously."</p>
+      <div style="display:flex;align-items:center;gap:0.75rem">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--cpp-dim);display:flex;align-items:center;justify-content:center;font-size:1rem">👨‍💻</div>
+        <div><div style="font-size:0.85rem;font-weight:700">Arjun Sharma</div><div style="font-size:0.75rem;color:var(--text-muted)">CS Student · IIT Delhi</div></div>
+      </div>
+    </div>
+    <div class="feature-card animate-fade-up delay-1" style="border-left:2px solid var(--python-color);">
+      <p style="color:var(--text-secondary);font-size:0.9rem;line-height:1.7;margin-bottom:1rem">"I went from zero to building a complete inventory management system in C++ in just 6 weeks. The project-based approach is incredibly effective."</p>
+      <div style="display:flex;align-items:center;gap:0.75rem">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--python-dim);display:flex;align-items:center;justify-content:center;font-size:1rem">👩‍🎓</div>
+        <div><div style="font-size:0.85rem;font-weight:700">Priya Nair</div><div style="font-size:0.75rem;color:var(--text-muted)">Software Engineer · Bangalore</div></div>
+      </div>
+    </div>
+    <div class="feature-card animate-fade-up delay-2" style="border-left:2px solid var(--accent);">
+      <p style="color:var(--text-secondary);font-size:0.9rem;line-height:1.7;margin-bottom:1rem">"The cheat sheets are a lifesaver during interviews. And the quiz section genuinely tests whether you understand or just memorised syntax."</p>
+      <div style="display:flex;align-items:center;gap:0.75rem">
+        <div style="width:36px;height:36px;border-radius:50%;background:rgba(124,58,237,0.1);display:flex;align-items:center;justify-content:center;font-size:1rem">👨‍🔬</div>
+        <div><div style="font-size:0.85rem;font-weight:700">Rahul Mehta</div><div style="font-size:0.75rem;color:var(--text-muted)">Data Scientist · Mumbai</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PROGRESS DASHBOARD ===== -->
+<section class="section" id="progressSection" style="padding-top:0;padding-bottom:0;display:none">
+  <div style="max-width:900px;margin:0 auto;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1.75rem 2rem;display:flex;align-items:center;gap:2rem;flex-wrap:wrap">
+    <div>
+      <div style="font-family:var(--font-code);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:0.25rem">Your Progress</div>
+      <div style="font-size:1.5rem;font-weight:800;font-family:var(--font-code);background:linear-gradient(90deg,var(--cpp-color),var(--python-color));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text" id="progressCount">0 topics</div>
+    </div>
+    <div style="flex:1;min-width:180px">
+      <div style="height:6px;background:var(--bg-secondary);border-radius:3px;overflow:hidden">
+        <div id="progressBar" style="height:100%;border-radius:3px;background:linear-gradient(90deg,var(--cpp-color),var(--python-color));transition:width 1s ease;width:0%"></div>
+      </div>
+      <div style="font-size:0.75rem;color:var(--text-muted);margin-top:0.4rem;font-family:var(--font-code)">of 46 topics completed</div>
+    </div>
+    <a href="pages/lesson.html" class="btn btn-primary">Continue Learning →</a>
+  </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<section class="section" style="text-align:center;">
+  <div class="hero-badge" style="margin:0 auto 1.5rem">Ready to start?</div>
+  <h2 style="font-size:clamp(2rem,5vw,3rem);font-weight:800;letter-spacing:-0.02em;margin-bottom:1rem">Begin your coding journey today</h2>
+  <p style="color:var(--text-secondary);max-width:480px;margin:0 auto 2.5rem;font-size:1.05rem">No account needed. Pick a language and start learning right now — completely free.</p>
+  <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+    <a href="pages/learn.html?lang=cpp" class="hero-btn hero-btn-cpp">⚙ Start C++</a>
+    <a href="pages/learn.html?lang=python" class="hero-btn hero-btn-python">🐍 Start Python</a>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-logo">
+        <div class="logo-icon">CC</div>
+        <span class="logo-text">CodeCraft</span>
+      </div>
+      <p class="footer-tagline">A free, self-paced platform for learning C++ and Python — from absolute beginner to advanced.</p>
+    </div>
+    <div>
+      <div class="footer-col-title">Learn</div>
+      <a href="pages/learn.html?lang=cpp" class="footer-link">C++ Path</a>
+      <a href="pages/learn.html?lang=python" class="footer-link">Python Path</a>
+      <a href="pages/lesson.html" class="footer-link">All Lessons</a>
+      <a href="pages/quiz.html" class="footer-link">Quizzes</a>
+    </div>
+    <div>
+      <div class="footer-col-title">Resources</div>
+      <a href="pages/projects.html" class="footer-link">Projects</a>
+      <a href="pages/cheatsheet.html" class="footer-link">Cheat Sheets</a>
+      <a href="pages/cheatsheet.html#cpp" class="footer-link">C++ Reference</a>
+      <a href="pages/cheatsheet.html#python" class="footer-link">Python Reference</a>
+    </div>
+    <div>
+      <div class="footer-col-title">Levels</div>
+      <a href="pages/learn.html" class="footer-link">Beginner</a>
+      <a href="pages/learn.html" class="footer-link">Intermediate</a>
+      <a href="pages/learn.html" class="footer-link">Advanced</a>
+      <a href="pages/projects.html" class="footer-link">Projects</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 CodeCraft. Built for learners.</span>
+    <div class="footer-bottom-links">
+      <a href="#" class="footer-bottom-link">Privacy</a>
+      <a href="#" class="footer-bottom-link">Terms</a>
+      <a href="#" class="footer-bottom-link">Contact</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

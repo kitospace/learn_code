@@ -1,0 +1,1567 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cheat Sheet — CodeCraft</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
+  <script src="../js/app.js" defer></script>
+  <style>
+    /* ── Cheatsheet Layout ── */
+    .cs-page { display: flex; min-height: calc(100vh - 64px); margin-top: 64px; position: relative; z-index: 1; }
+
+    /* ── Left TOC Sidebar ── */
+    .cs-toc {
+      width: 220px;
+      flex-shrink: 0;
+      position: sticky;
+      top: 64px;
+      height: calc(100vh - 64px);
+      overflow-y: auto;
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border);
+      padding: 1.25rem 0;
+    }
+    .cs-toc-title { font-family: var(--font-code); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-muted); padding: 0 1.25rem; margin-bottom: 0.5rem; font-weight: 700; }
+    .cs-toc-link {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.45rem 1.25rem;
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all var(--transition);
+      border-left: 2px solid transparent;
+    }
+    .cs-toc-link:hover { color: var(--text-primary); background: var(--bg-card); }
+    .cs-toc-link.active { color: var(--cpp-color); border-left-color: var(--cpp-color); background: var(--cpp-dim); }
+    .cs-toc-sep { height: 1px; background: var(--border); margin: 0.75rem 1.25rem; }
+
+    /* ── Main content ── */
+    .cs-main { flex: 1; overflow-y: auto; padding: 2rem 2.5rem 4rem; }
+
+    /* ── Sticky lang tabs inside main ── */
+    .cs-lang-tabs {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: var(--bg-primary);
+      padding: 0.75rem 0 0.75rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .cs-tab {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.55rem 1.35rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem; font-weight: 700;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-family: var(--font-code);
+      transition: all var(--transition);
+    }
+    .cs-tab:hover { border-color: var(--border-glow); color: var(--text-primary); }
+    .cs-tab.active.cpp { background: var(--cpp-dim); color: var(--cpp-color); border-color: rgba(0,217,255,0.4); box-shadow: 0 0 12px rgba(0,217,255,0.1); }
+    .cs-tab.active.python { background: var(--python-dim); color: var(--python-color); border-color: rgba(57,255,138,0.4); box-shadow: 0 0 12px rgba(57,255,138,0.1); }
+    .cs-tab-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+    .cs-tab-count { font-size: 0.68rem; padding: 0.1rem 0.45rem; border-radius: 100px; background: rgba(255,255,255,0.08); }
+
+    /* ── Search in tabs bar ── */
+    .cs-search-wrap { margin-left: auto; position: relative; }
+    .cs-search-icon { position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.85rem; pointer-events: none; }
+    .cs-search {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.45rem 1rem 0.45rem 2.25rem;
+      font-size: 0.82rem;
+      font-family: var(--font-code);
+      color: var(--text-primary);
+      outline: none;
+      width: 200px;
+      transition: border-color var(--transition), width var(--transition);
+    }
+    .cs-search::placeholder { color: var(--text-muted); }
+    .cs-search:focus { border-color: var(--cpp-color); width: 260px; }
+
+    /* ── Language Panes ── */
+    .cs-content { display: none; }
+    .cs-content.active { display: block; }
+
+    /* ── Section ── */
+    .cs-section { margin-bottom: 2.5rem; }
+    .cs-section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.65rem 1rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      margin-bottom: 0;
+      user-select: none;
+      transition: background var(--transition);
+    }
+    .cs-section-header:hover { background: var(--bg-card); }
+    .cs-section.collapsed .cs-section-body { display: none; }
+    .cs-section.collapsed .cs-section-chevron { transform: rotate(-90deg); }
+    .cs-section-left { display: flex; align-items: center; gap: 0.75rem; }
+    .cs-section-icon { font-size: 1.1rem; line-height: 1; }
+    .cs-section-title { font-size: 0.92rem; font-weight: 700; font-family: var(--font-code); }
+    .cs-section-badge { font-size: 0.68rem; padding: 0.15rem 0.55rem; border-radius: 100px; font-family: var(--font-code); font-weight: 700; background: var(--cpp-dim); color: var(--cpp-color); border: 1px solid rgba(0,217,255,0.2); }
+    .cs-section-badge.py { background: var(--python-dim); color: var(--python-color); border-color: rgba(57,255,138,0.2); }
+    .cs-section-chevron { color: var(--text-muted); font-size: 0.8rem; transition: transform var(--transition); }
+    .cs-section-body { border: 1px solid var(--border); border-top: none; border-radius: 0 0 var(--radius-sm) var(--radius-sm); overflow: hidden; }
+
+    /* ── Cards inside sections ── */
+    .cs-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 0; }
+    .cs-card { border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .cs-card:last-child { border-right: none; }
+
+    .cs-card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.6rem 1rem;
+      background: rgba(255,255,255,0.02);
+      border-bottom: 1px solid var(--border);
+    }
+    .cs-card-title { font-family: var(--font-code); font-size: 0.78rem; font-weight: 700; color: var(--text-primary); }
+    .cs-copy-btn {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      padding: 0.15rem 0.55rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      background: none;
+      transition: all var(--transition);
+      font-family: var(--font-code);
+    }
+    .cs-copy-btn:hover { color: var(--text-primary); border-color: var(--border-glow); }
+
+    /* ── Code snippet inside cards ── */
+    .cs-snippet pre {
+      padding: 1rem;
+      font-family: var(--font-code);
+      font-size: 0.79rem;
+      line-height: 1.75;
+      overflow-x: auto;
+      margin: 0;
+      background: #0d1117;
+    }
+    [data-theme="light"] .cs-snippet pre { background: #1e2030; }
+
+    /* ── Table inside cards ── */
+    .cs-table { width: 100%; border-collapse: collapse; }
+    .cs-table th { padding: 0.45rem 1rem; font-family: var(--font-code); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); text-align: left; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border); }
+    .cs-table td { padding: 0.5rem 1rem; font-size: 0.82rem; border-bottom: 1px solid rgba(255,255,255,0.03); vertical-align: top; }
+    .cs-table tr:last-child td { border-bottom: none; }
+    .cs-table tr:hover td { background: var(--bg-secondary); }
+    .cs-code { font-family: var(--font-code); font-size: 0.8rem; color: var(--cpp-color); }
+    .cs-code.py { color: var(--python-color); }
+    .cs-desc { color: var(--text-secondary); font-size: 0.8rem; }
+
+    /* ── Side-by-side comparison ── */
+    .cs-compare { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--border); }
+    .cs-compare-pane { position: relative; }
+    .cs-compare-pane + .cs-compare-pane { border-left: 1px solid var(--border); }
+    .cs-compare-label {
+      position: absolute; top: 0.6rem; right: 0.75rem;
+      font-family: var(--font-code); font-size: 0.65rem; font-weight: 700;
+      padding: 0.15rem 0.55rem; border-radius: 100px;
+    }
+    .cs-compare-label.cpp { background: var(--cpp-dim); color: var(--cpp-color); border: 1px solid rgba(0,217,255,0.2); }
+    .cs-compare-label.py { background: var(--python-dim); color: var(--python-color); border: 1px solid rgba(57,255,138,0.2); }
+    .cs-compare-pane pre { padding: 0.85rem 1rem; font-family: var(--font-code); font-size: 0.78rem; line-height: 1.7; overflow-x: auto; background: #0d1117; margin: 0; }
+    [data-theme="light"] .cs-compare-pane pre { background: #1e2030; }
+
+    /* ── Full-width snippet ── */
+    .cs-full { border-top: 1px solid var(--border); }
+    .cs-full pre { padding: 1rem; font-family: var(--font-code); font-size: 0.79rem; line-height: 1.75; overflow-x: auto; background: #0d1117; margin: 0; }
+    [data-theme="light"] .cs-full pre { background: #1e2030; }
+
+    /* ── Comparison Page (side-by-side of C++ vs Python) ── */
+    .cs-versus-page { display: none; }
+    .cs-versus-page.active { display: block; }
+    .vs-block { margin-bottom: 2rem; }
+    .vs-block-title { font-size: 0.8rem; font-weight: 700; font-family: var(--font-code); text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); padding: 0.5rem 1rem; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-sm) var(--radius-sm) 0 0; }
+    .vs-panes { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--border); border-top: none; border-radius: 0 0 var(--radius-sm) var(--radius-sm); overflow: hidden; }
+    .vs-pane { position: relative; background: #0d1117; }
+    [data-theme="light"] .vs-pane { background: #1e2030; }
+    .vs-pane + .vs-pane { border-left: 1px solid var(--border); }
+    .vs-pane pre { padding: 1rem; font-family: var(--font-code); font-size: 0.79rem; line-height: 1.75; overflow-x: auto; margin: 0; background: transparent; }
+    .vs-lang-tag { position: absolute; top: 0.5rem; right: 0.75rem; font-family: var(--font-code); font-size: 0.65rem; font-weight: 700; padding: 0.15rem 0.55rem; border-radius: 100px; }
+
+    /* ── Highlight search match ── */
+    .cs-highlight { background: rgba(255,230,0,0.25); border-radius: 2px; }
+
+    /* ── Responsive ── */
+    @media (max-width: 1024px) { .cs-toc { display: none; } }
+    @media (max-width: 768px) {
+      .cs-main { padding: 1.25rem 1rem 3rem; }
+      .cs-cards { grid-template-columns: 1fr; }
+      .cs-compare, .vs-panes { grid-template-columns: 1fr; }
+      .cs-compare-pane + .cs-compare-pane { border-left: none; border-top: 1px solid var(--border); }
+      .vs-pane + .vs-pane { border-left: none; border-top: 1px solid var(--border); }
+      .cs-search { width: 140px; }
+      .cs-search:focus { width: 180px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="../index.html" class="navbar-logo">
+    <div class="logo-icon">CC</div>
+    <span class="logo-text">CodeCraft</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="../index.html" class="nav-link">Home</a></li>
+    <li><a href="learn.html" class="nav-link">Learn</a></li>
+    <li><a href="lesson.html" class="nav-link">Lessons</a></li>
+    <li><a href="quiz.html" class="nav-link">Quizzes</a></li>
+    <li><a href="projects.html" class="nav-link">Projects</a></li>
+    <li><a href="cheatsheet.html" class="nav-link active">Cheat Sheet</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="theme-toggle" id="themeToggle">☀️</button>
+  </div>
+  <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" id="mobileClose">✕</button>
+  <a href="../index.html" class="mobile-nav-link">Home</a>
+  <a href="learn.html" class="mobile-nav-link">Learn</a>
+  <a href="lesson.html" class="mobile-nav-link">Lessons</a>
+  <a href="quiz.html" class="mobile-nav-link">Quizzes</a>
+  <a href="projects.html" class="mobile-nav-link">Projects</a>
+  <a href="cheatsheet.html" class="mobile-nav-link">Cheat Sheet</a>
+</div>
+
+<!-- ===== TWO-PANEL LAYOUT ===== -->
+<div class="cs-page">
+
+  <!-- LEFT TOC -->
+  <nav class="cs-toc">
+    <div class="cs-toc-title">C++ Sections</div>
+    <div class="cs-toc-link active" data-toc="cpp" data-section="cpp-types">📦 Data Types</div>
+    <div class="cs-toc-link" data-toc="cpp" data-section="cpp-control">🔀 Control Flow</div>
+    <div class="cs-toc-link" data-toc="cpp" data-section="cpp-functions">🔧 Functions</div>
+    <div class="cs-toc-link" data-toc="cpp" data-section="cpp-pointers">📍 Pointers</div>
+    <div class="cs-toc-link" data-toc="cpp" data-section="cpp-stl">📚 STL Containers</div>
+    <div class="cs-toc-link" data-toc="cpp" data-section="cpp-oop">🏗️ OOP</div>
+    <div class="cs-toc-link" data-toc="cpp" data-section="cpp-memory">🧠 Memory</div>
+    <div class="cs-toc-sep"></div>
+    <div class="cs-toc-title">Python Sections</div>
+    <div class="cs-toc-link" data-toc="python" data-section="py-types">📦 Data Types</div>
+    <div class="cs-toc-link" data-toc="python" data-section="py-control">🔀 Control Flow</div>
+    <div class="cs-toc-link" data-toc="python" data-section="py-functions">🔧 Functions</div>
+    <div class="cs-toc-link" data-toc="python" data-section="py-ds">📋 Data Structures</div>
+    <div class="cs-toc-link" data-toc="python" data-section="py-oop">🏗️ OOP</div>
+    <div class="cs-toc-link" data-toc="python" data-section="py-fileio">💾 File I/O</div>
+    <div class="cs-toc-sep"></div>
+    <div class="cs-toc-title">Views</div>
+    <div class="cs-toc-link" data-toc="versus" data-section="">⚡ C++ vs Python</div>
+  </nav>
+
+  <!-- MAIN AREA -->
+  <div class="cs-main">
+
+    <!-- STICKY TABS + SEARCH -->
+    <div class="cs-lang-tabs">
+      <button class="cs-tab active cpp" data-cs="cpp">
+        <span class="cs-tab-dot"></span> C++ <span class="cs-tab-count">7</span>
+      </button>
+      <button class="cs-tab" data-cs="python">
+        <span class="cs-tab-dot"></span> Python <span class="cs-tab-count">6</span>
+      </button>
+      <button class="cs-tab" data-cs="versus">
+        ⚡ C++ vs Python
+      </button>
+      <div class="cs-search-wrap">
+        <span class="cs-search-icon">🔍</span>
+        <input type="text" class="cs-search" id="csSearch" placeholder="Search..." />
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════ C++ ═══════════════════════════ -->
+    <div class="cs-content active" id="cs-cpp">
+
+      <!-- Data Types -->
+      <div class="cs-section" id="cpp-types" data-searchable>
+        <div class="cs-section-header cs-section-toggle">
+          <div class="cs-section-left">
+            <span class="cs-section-icon">📦</span>
+            <span class="cs-section-title">Data Types &amp; Variables</span>
+            <span class="cs-section-badge">C++</span>
+          </div>
+          <span class="cs-section-chevron">▼</span>
+        </div>
+        <div class="cs-section-body">
+          <div class="cs-cards">
+            <div class="cs-card">
+              <div class="cs-card-header"><span class="cs-card-title">Primitive Types</span></div>
+              <table class="cs-table">
+                <thead><tr><th>Type</th><th>Size</th><th>Range / Notes</th></tr></thead>
+                <tbody>
+                  <tr><td><code class="cs-code">int</code></td><td class="cs-desc">4 bytes</td><td class="cs-desc">-2,147,483,648 to 2,147,483,647</td></tr>
+                  <tr><td><code class="cs-code">long long</code></td><td class="cs-desc">8 bytes</td><td class="cs-desc">±9.2 × 10¹⁸</td></tr>
+                  <tr><td><code class="cs-code">float</code></td><td class="cs-desc">4 bytes</td><td class="cs-desc">~7 decimal digits precision</td></tr>
+                  <tr><td><code class="cs-code">double</code></td><td class="cs-desc">8 bytes</td><td class="cs-desc">~15 decimal digits precision</td></tr>
+                  <tr><td><code class="cs-code">char</code></td><td class="cs-desc">1 byte</td><td class="cs-desc">Single ASCII character</td></tr>
+                  <tr><td><code class="cs-code">bool</code></td><td class="cs-desc">1 byte</td><td class="cs-desc"><code class="cs-code">true</code> or <code class="cs-code">false</code></td></tr>
+                  <tr><td><code class="cs-code">void</code></td><td class="cs-desc">—</td><td class="cs-desc">No value / return type</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="cs-card">
+              <div class="cs-card-header"><span class="cs-card-title">Declaration &amp; Initialisation</span><button class="cs-copy-btn">Copy</button></div>
+              <div class="cs-snippet"><pre><code class="language-cpp">int x = 10;            // initialise
+int y;                 // uninitialised (garbage value!)
+const int MAX = 100;   // immutable
+auto z = 3.14;         // type deduced: double
+
+unsigned int u = 0;    // only non-negative
+long long big = 9e18;
+size_t n = arr.size(); // size type
+
+// Multiple declarations
+int a = 1, b = 2, c = 3;
+
+// Type casting
+int i = (int)3.7;     // C-style: 3
+int j = static_cast&lt;int&gt;(3.7); // C++ style</code></pre></div>
+            </div>
+            <div class="cs-card">
+              <div class="cs-card-header"><span class="cs-card-title">Operators</span></div>
+              <table class="cs-table">
+                <thead><tr><th>Operator</th><th>Meaning</th></tr></thead>
+                <tbody>
+                  <tr><td><code class="cs-code">a % b</code></td><td class="cs-desc">Modulus (remainder)</td></tr>
+                  <tr><td><code class="cs-code">a &amp;&amp; b</code></td><td class="cs-desc">Logical AND</td></tr>
+                  <tr><td><code class="cs-code">a || b</code></td><td class="cs-desc">Logical OR</td></tr>
+                  <tr><td><code class="cs-code">!a</code></td><td class="cs-desc">Logical NOT</td></tr>
+                  <tr><td><code class="cs-code">a &amp; b</code></td><td class="cs-desc">Bitwise AND</td></tr>
+                  <tr><td><code class="cs-code">a | b</code></td><td class="cs-desc">Bitwise OR</td></tr>
+                  <tr><td><code class="cs-code">a ^ b</code></td><td class="cs-desc">Bitwise XOR</td></tr>
+                  <tr><td><code class="cs-code">a &lt;&lt; n</code></td><td class="cs-desc">Left shift (×2ⁿ)</td></tr>
+                  <tr><td><code class="cs-code">a &gt;&gt; n</code></td><td class="cs-desc">Right shift (÷2ⁿ)</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Control Flow -->
+      <div class="cs-section" id="cpp-control" data-searchable>
+        <div class="cs-section-header cs-section-toggle">
+          <div class="cs-section-left">
+            <span class="cs-section-icon">🔀</span>
+            <span class="cs-section-title">Control Flow &amp; Loops</span>
+            <span class="cs-section-badge">C++</span>
+          </div>
+          <span class="cs-section-chevron">▼</span>
+        </div>
+        <div class="cs-section-body">
+          <div class="cs-cards">
+            <div class="cs-card">
+              <div class="cs-card-header"><span class="cs-card-title">if / else / switch</span><button class="cs-copy-btn">Copy</button></div>
+              <div class="cs-snippet"><pre><code class="language-cpp">// if / else
+if (x > 0) {
+    cout &lt;&lt; "positive";
+} else if (x == 0) {
+    cout &lt;&lt; "zero";
+} else {
+    cout &lt;&lt; "negative";
+}
+
+// Ternary
+string s = (x > 0) ? "pos" : "neg";
+
+// switch
+switch (grade) {
+    case 'A': cout &lt;&lt; "Excellent"; break;
+    case 'B': cout &lt;&lt; "Good"; break;
+    default:  cout &lt;&lt; "Other";
+}</code></pre></div>
+            </div>
+            <div class="cs-card">
+              <div class="cs-card-header"><span class="cs-card-title">Loops</span><button class="cs-copy-btn">Copy</button></div>
+              <div class="cs-snippet"><pre><code class="language-cpp">// for loop
+for (int i = 0; i &lt; 10; i++) { }
+
+// range-based for (C++11)
+for (auto&amp; elem : container) { }
+for (const auto&amp; [k, v] : map) { }  // C++17
+
+// while
+while (condition) { }
+
+// do-while (runs at least once)
+do {
+    // ...
+} while (condition);
+
+// Loop control
+for (int i = 0; i &lt; 100; i++) {
+    if (i == 5) continue;  // skip to next
+    if (i == 10) break;    // exit loop
+}</code></pre></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Functions -->
+      <div class="cs-section" id="cpp-functions" data-searchable>
+        <div class="cs-section-header cs-section-toggle">
+          <div class="cs-section-left">
+            <span class="cs-section-icon">🔧</span>
+            <span class="cs-section-title">Functions &amp; Lambdas</span>
+            <span class="cs-section-badge">C++</span>
+          </div>
+          <span class="cs-section-chevron">▼</span>
+        </div>
+        <div class="cs-section-body">
+          <div class="cs-cards">
+            <div class="cs-card">
+              <div class="cs-card-header"><span class="cs-card-title">Function Syntax</span><button class="cs-copy-btn">Copy</button></div>
+              <div class="cs-snippet"><pre><code class="language-cpp">// Basic
+int add(int a, int b) {
+    return a + b;
+}
+
+// Default parameters
+void greet(string name = "World") {
+    cout &lt;&lt; "Hello, " &lt;&lt; name;
+}
+
+// Pass by reference (modifies original)
+void increment(int&amp; x) { x++; }
+
+// Pass by pointer
+void zero(int* p) { *p = 0; }
+
+// Overloading — same name, different params
+int max(int a, int b);
+double max(double a, double b);
+
+// Inline (hint to compiler)
+inline int square(int x) { return x*x; }</code></pre></div>
+            </div>
+            <div class="cs-card">
+              <div class="cs-card-header"><span class="cs-card-title">Templates &amp; Lambdas</span><button class="cs-copy-btn">Copy</button></div>
+              <div class="cs-snippet"><pre><code class="language-cpp">// Function template
+template&lt;typename T&gt;
+T max(T a, T b) {
+    return (a > b) ? a : b;
+}
+
+// Lambda expression
+auto square = [](int x) { return x*x; };
+auto add = [](int a, int b) -&gt; int {
+    return a + b;
+};
+
+// Capture variable
+int factor = 3;
+auto multiply = [factor](int x) {
+    return x * factor;
+};
+
+// Lambda with algorithm
+sort(v.begin(), v.end(), [](int a, int b) {
+    return a &gt; b;  // descending
+});</code></pre></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pointers -->
+      <div class="cs-section" id="cpp-pointers" data-searchable>
+        <div class="cs-section-header cs-section-toggle">
+          <div class="cs-section-left">
+            <span class="cs-section-icon">📍</span>
+            <span class="cs-section-title">Pointers &amp; References</span>
+            <span class="cs-section-badge">C++</span>
+          </div>
+          <span class="cs-section-chevron">▼</span>
+        </div>
+        <div class="cs-section-body">
+          <div class="cs-cards">
+            <div class="cs-card">
+              <div class="cs-card-header"><span class="cs-card-title">Pointer Operations</span></div>
+              <table class="cs-table">
+                <thead><tr><th>Syntax</th><th>Meaning</th></tr></thead>
+                <tbody>
+                  <tr><td><code class="cs-code">int* p</code></td><td class="cs-desc">Declare pointer to int</td></tr>
+                  <tr><td><code class="cs-code">p = &amp;x</code></td><td class="cs-desc">Store address of x in p</td></tr>
+                  <tr><td><code class="cs-code">*p</code></td><td class="cs-desc">Dereference: value at address p</td></tr>
+                  <tr><td><code class="cs-code">p++</code></td><td class="cs-desc">Advance by sizeof(type) bytes</td></tr>
+                  <tr><td><code class="cs-code">p = nullptr</code></td><td class="cs-desc">Null pointer (preferred)</td></tr>
+                  <tr><td><code class="cs-code">int&amp; r = x</code></td><td class="cs-desc">Reference — alias for x</td></tr>
+                  <tr><td><code class="cs-code">new int(5)</code></td><td class="cs-desc">Allocate on heap</td></tr>
+                  <tr><td><code class="cs-code">delete p</code></td><td class="cs-desc">Free heap memory</td></tr>
+                  <tr><td><code class="cs-code">obj-&gt;member</code></td><td class="cs-desc">Access via pointer (= (*obj).member)</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="cs-card">
+              <div class="cs-card-header"><span class="cs-card-title">Pointer Example</span><button class="cs-copy-btn">Copy</button></div>
+              <div class="cs-snippet"><pre><code class="language-cpp">int x = 42;
+int* p = &amp;x;   // p holds address of x
+
+cout &lt;&lt; x;     // 42  — value
+cout &lt;&lt; &amp;x;    // 0x7f... — address
+cout &lt;&lt; p;     // 0x7f... — same address
+cout &lt;&lt; *p;    // 42  — dereference
+
+*p = 100;      // modify x through pointer
+cout &lt;&lt; x;     // 100
+
+// Array traversal with pointer
+int arr[] = {1, 2, 3, 4};
+int* ptr = arr;
+for (int i = 0; i &lt; 4; i++)
+    cout &lt;&lt; *(ptr + i) &lt;&lt; " "; // 1 2 3 4</code></pre></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STL -->
+      <div class="cs-section" id="cpp-stl" data-searchable>
+        <div class="cs-section-header cs-section-toggle">
+          <div class="cs-section-left">
+            <span class="cs-section-icon">📚</span>
+            <span class="cs-section-title">STL Containers &amp; Algorithms</span>
+            <span class="cs-section-badge">C++</span>
+          </div>
+          <span class="cs-section-chevron">▼</span>
+        </div>
+        <div class="cs-section-body">
+          <div class="cs-cards">
+            <div class="cs-card">
+              <div class="cs-card-header"><span class="cs-card-title">vector&lt;T&gt;</span><button class="cs-copy-btn">Copy</button></div>
+              <div class="cs-snippet"><pre><code class="language-cpp">#include &lt;vector&gt;
+vector&lt;int&gt; v = {1, 2, 3};
+
+v.push_back(4);          // append
+v.pop_back();            // remove last
+v.insert(v.begin()+1,10);// insert at index
+v.erase(v.begin()+1);   // remove at index
+v.size();                // element count
+v.empty();               // true if empty
+v.clear();               // remove all
+v[0];  v.at(0);          // access (at() throws)
+v.front(); v.back();     // first / last
+sort(v.begin(), v.end());// sort ascending
+reverse(v.begin(), v.end());
+*max_element(v.begin(), v.end());
+count(v.begin(), v.end(), 3); // count 3s</code></pre></div>
+            </div>
+            <div class="cs-card">
+              <div class="cs-card-header"><span class="cs-card-title">map / unordered_map</span><button class="cs-copy-btn">Copy</button></div>
+              <div class="cs-snippet"><pre><code class="language-cpp">#include &lt;map&gt;
+map&lt;string, int&gt; m;        // sorted O(log n)
+
+m["apple"] = 5;            // insert/update
+m.insert({"banana", 3});
+m.count("apple");          // 1 if exists
+m.find("cherry");          // returns iterator
+m.erase("apple");
+m.size();
+
+// Iterate
+for (auto&amp; [key, val] : m) {
+    cout &lt;&lt; key &lt;&lt; ": " &lt;&lt; val &lt;&lt; "\n";
+}
+
+// unordered_map — O(1) average
+#include &lt;unordered_map&gt;
+unordered_map&lt;string,int&gt; um;
+um["x"] = 10;              // hash-based</code></pre></div>
+            </div>
+            <div class="cs-card">
+              <div class="cs-card-header"><span class="cs-card-title">set, stack, queue</span><button class="cs-copy-btn">Copy</button></div>
+              <div class="cs-snippet"><pre><code class="language-cpp">// set — unique sorted elements
+#include &lt;set&gt;
+set&lt;int&gt; s = {3,1,2,1};  // {1,2,3}
+s.insert(4);
+s.erase(1);
+s.count(2);  // 1 or 0
+
+// stack — LIFO
+#include &lt;stack&gt;
+stack&lt;int&gt; st;
+st.push(1); st.push(2);
+st.top();   // 2 (peek)
+st.pop();   // remove top
+
+// queue — FIFO
+#include &lt;queue&gt;
+queue&lt;int&gt; q;
+q.push(1); q.push(2);
+q.front();  // 1 (peek)
+q.pop();    // remove front</code></pre></div>
+            </div>
+            <div class="cs-card">
+              <div class="cs-card-header"><span class="cs-card-title">string</span><button class="cs-copy-btn">Copy</button></div>
+              <div class="cs-snippet"><pre><code class="language-cpp">#include &lt;string&gt;
+string s = "Hello, World!";
+
+s.length();  s.size();     // 13
+s.substr(7, 5);            // "World"
+s.find("World");           // 7
+s.replace(0, 5, "Hi");    // "Hi, World!"
+s += " Bye";               // append
+s.empty();                 // false
+s.at(0);  s[0];            // 'H'
+toupper(s[0]);             // 'H'
+
+// Convert
+stoi("42");                // string → int
+stod("3.14");              // string → double
+to_string(42);             // int → string
+// String stream
+#include &lt;sstream&gt;
+stringstream ss("10 20 30");
+int a, b, c;
+ss &gt;&gt; a &gt;&gt; b &gt;&gt; c;</code></pre></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OOP -->
+      <div class="cs-section" id="cpp-oop" data-searchable>
+        <div class="cs-section-header cs-section-toggle">
+          <div class="cs-section-left">
+            <span class="cs-section-icon">🏗️</span>
+            <span class="cs-section-title">Object-Oriented Programming</span>
+            <span class="cs-section-badge">C++</span>
+          </div>
+          <span class="cs-section-chevron">▼</span>
+        </div>
+        <div class="cs-section-body">
+          <div class="cs-cards">
+            <div class="cs-card">
+              <div class="cs-card-header"><span class="cs-card-title">Class Definition</span><button class="cs-copy-btn">Copy</button></div>
+              <div class="cs-snippet"><pre><code class="language-cpp">class Animal {
+private:
+    string name;
+
+protected:
+    int age;
+
+public:
+    // Constructor with initialiser list
+    Animal(string n, int a) : name(n), age(a) {}
+
+    // Copy constructor
+    Animal(const Animal&amp; other) : name(other.name), age(other.age) {}
+
+    // Destructor
+    virtual ~Animal() {}
+
+    // Getters / setters
+    string getName() const { return name; }
+    void setAge(int a) { age = a; }
+
+    // Virtual method (can be overridden)
+    virtual void speak() const {
+        cout &lt;&lt; name &lt;&lt; " makes a sound\n";
+    }
+};
+
+class Dog : public Animal {
+public:
+    Dog(string n) : Animal(n, 0) {}
+    void speak() const override {    // override keyword
+        cout &lt;&lt; getName() &lt;&lt; ": Woof!\n";
+    }
+};</code></pre></div>
+            </div>
+            <div class="cs-card">
+              <div class="cs-card-header"><span class="cs-card-title">Key OOP Concepts</span></div>
+              <table class="cs-table">
+                <thead><tr><th>Concept</th><th>Syntax / Keyword</th></tr></thead>
+                <tbody>
+                  <tr><td class="cs-desc">Single inheritance</td><td><code class="cs-code">class B : public A</code></td></tr>
+                  <tr><td class="cs-desc">Multiple inheritance</td><td><code class="cs-code">class C : public A, public B</code></td></tr>
+                  <tr><td class="cs-desc">Abstract class</td><td><code class="cs-code">virtual void f() = 0;</code></td></tr>
+                  <tr><td class="cs-desc">Interface (pure abstract)</td><td><code class="cs-code">All methods = 0</code></td></tr>
+                  <tr><td class="cs-desc">Static member</td><td><code class="cs-code">static int count;</code></td></tr>
+                  <tr><td class="cs-desc">Friend function</td><td><code class="cs-code">friend void fn(A&amp; a);</code></td></tr>
+                  <tr><td class="cs-desc">Operator overload</td><td><code class="cs-code">A operator+(const A&amp; r)</code></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Memory Management -->
+      <div class="cs-section" id="cpp-memory" data-searchable>
+        <div class="cs-section-header cs-section-toggle">
+          <div class="cs-section-left">
+            <span class="cs-section-icon">🧠</span>
+            <span class="cs-section-title">Memory Management</span>
+            <span class="cs-section-badge">C++</span>
+          </div>
+          <span class="cs-section-chevron">▼</span>
+        </div>
+        <div class="cs-section-body">
+          <div class="cs-cards">
+            <div class="cs-card">
+              <div class="cs-card-header"><span class="cs-card-title">new / delete &amp; Smart Pointers</span><button class="cs-copy-btn">Copy</button></div>
+              <div class="cs-snippet"><pre><code class="language-cpp">// Raw (manual — avoid in modern C++)
+int* p = new int(42);
+int* arr = new int[10];
+delete p;          // single object
+delete[] arr;      // array
+
+// Smart pointers — prefer these
+#include &lt;memory&gt;
+
+// unique_ptr: sole ownership
+auto up = make_unique&lt;Dog&gt;("Rex");
+up-&gt;speak();
+// auto-freed when up goes out of scope
+
+// shared_ptr: shared ownership
+auto sp1 = make_shared&lt;Dog&gt;("Max");
+auto sp2 = sp1;    // ref count = 2
+sp1.use_count();   // 2
+
+// weak_ptr: non-owning reference
+weak_ptr&lt;Dog&gt; wp = sp1;
+if (auto locked = wp.lock()) {
+    locked-&gt;speak();
+}</code></pre></div>
+            </div>
+            <div class="cs-card">
+              <div class="cs-card-header"><span class="cs-card-title">Move Semantics</span><button class="cs-copy-btn">Copy</button></div>
+              <div class="cs-snippet"><pre><code class="language-cpp">// Move constructor
+class Buffer {
+    int* data;
+    size_t size;
+public:
+    // Move constructor (steals resources)
+    Buffer(Buffer&amp;&amp; other) noexcept
+        : data(other.data), size(other.size) {
+        other.data = nullptr;  // null out source
+        other.size = 0;
+    }
+
+    // Move assignment
+    Buffer&amp; operator=(Buffer&amp;&amp; other) noexcept {
+        if (this != &amp;other) {
+            delete[] data;
+            data = other.data;
+            size = other.size;
+            other.data = nullptr;
+        }
+        return *this;
+    }
+};
+
+// std::move — cast to rvalue
+vector&lt;string&gt; a = {"hello", "world"};
+vector&lt;string&gt; b = std::move(a); // a is now empty</code></pre></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end cs-cpp -->
+
+    <!-- ═══════════════════════════ PYTHON ═══════════════════════════ -->
+    <div class="cs-content" id="cs-python">
+
+      <!-- Data Types -->
+      <div class="cs-section" id="py-types" data-searchable>
+        <div class="cs-section-header cs-section-toggle">
+          <div class="cs-section-left">
+            <span class="cs-section-icon">📦</span>
+            <span class="cs-section-title">Data Types &amp; Variables</span>
+            <span class="cs-section-badge py">Python</span>
+          </div>
+          <span class="cs-section-chevron">▼</span>
+        </div>
+        <div class="cs-section-body">
+          <div class="cs-cards">
+            <div class="cs-card">
+              <div class="cs-card-header"><span class="cs-card-title">Built-in Types</span></div>
+              <table class="cs-table">
+                <thead><tr><th>Type</th><th>Example</th><th>Notes</th></tr></thead>
+                <tbody>
+                  <tr><td><code class="cs-code py">int</code></td><td class="cs-desc">42, -7, 0</td><td class="cs-desc">Arbitrary precision</td></tr>
+                  <tr><td><code class="cs-code py">float</code></td><td class="cs-desc">3.14, 1e10</td><td class="cs-desc">IEEE 754 double</td></tr>
+                  <tr><td><code class="cs-code py">complex</code></td><td class="cs-desc">3+4j</td><td class="cs-desc">Complex numbers</td></tr>
+                  <tr><td><code class="cs-code py">str</code></td><td class="cs-desc">"hello", 'hi'</td><td class="cs-desc">Immutable, Unicode</td></tr>
+                  <tr><td><code class="cs-code py">bool</code></td><td class="cs-desc">True, False</td><td class="cs-desc">Subclass of int</td></tr>
+                  <tr><td><code class="cs-code py">None</code></td><td class="cs-desc">None</td><td class="cs-desc">Null / no value</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="cs-card">
+              <div class="cs-card-header"><span class="cs-card-title">Variables &amp; Operators</span><button class="cs-copy-btn">Copy</button></div>
+              <div class="cs-snippet"><pre><code class="language-python">x = 10          # no type declaration needed
+y: int = 20     # type hint (optional)
+a, b = 1, 2     # multiple assignment
+a, b = b, a     # swap in one line
+
+# Operators
+10 // 3         # floor division → 3
+10 % 3          # modulus → 1
+2 ** 8          # exponentiation → 256
+
+# Logical
+True and False  # False
+True or False   # True
+not True        # False
+
+# Identity / membership
+x is None       # True if same object
+3 in [1,2,3]    # True
+
+# Augmented assignment
+x += 5; x -= 2; x *= 3; x //= 2</code></pre></div>
+            </div>
+            <div class="cs-card">
+              <div class="cs-card-header"><span class="cs-card-title">String Methods</span><button class="cs-copy-btn">Copy</button></div>
+              <div class="cs-snippet"><pre><code class="language-python">s = "Hello, World!"
+
+s.upper()          # "HELLO, WORLD!"
+s.lower()          # "hello, world!"
+s.strip()          # remove whitespace
+s.split(", ")      # ["Hello", "World!"]
+", ".join(lst)     # join list to string
+s.replace("World","Python")
+s.startswith("He") # True
+s.endswith("!")    # True
+s.find("World")    # 7  (-1 if not found)
+s.count("l")       # 3
+s[0:5]             # "Hello"  (slicing)
+s[::-1]            # reverse string
+
+# f-strings (Python 3.6+)
+name = "Alice"
+f"Hello, {name}!"          # "Hello, Alice!"
+f"{3.14:.2f}"              # "3.14"
+f"{1000000:,}"             # "1,000,000"</code></pre></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Control Flow -->
+      <div class="cs-section" id="py-control" data-searchable>
+        <div class="cs-section-header cs-section-toggle">
+          <div class="cs-section-left">
+            <span class="cs-section-icon">🔀</span>
+            <span class="cs-section-title">Control Flow &amp; Loops</span>
+            <span class="cs-section-badge py">Python</span>
+          </div>
+          <span class="cs-section-chevron">▼</span>
+        </div>
+        <div class="cs-section-body">
+          <div class="cs-cards">
+            <div class="cs-card">
+              <div class="cs-card-header"><span class="cs-card-title">Conditionals</span><button class="cs-copy-btn">Copy</button></div>
+              <div class="cs-snippet"><pre><code class="language-python">if x > 0:
+    print("positive")
+elif x == 0:
+    print("zero")
+else:
+    print("negative")
+
+# Ternary
+result = "pos" if x > 0 else "neg"
+
+# match-case (Python 3.10+)
+match status:
+    case 200: print("OK")
+    case 404: print("Not Found")
+    case _:   print("Unknown")</code></pre></div>
+            </div>
+            <div class="cs-card">
+              <div class="cs-card-header"><span class="cs-card-title">Loops</span><button class="cs-copy-btn">Copy</button></div>
+              <div class="cs-snippet"><pre><code class="language-python">for i in range(10):          # 0..9
+    pass
+
+for i in range(2, 10, 2):   # 2,4,6,8
+    pass
+
+# enumerate — index + value
+for i, val in enumerate(lst):
+    print(i, val)
+
+# zip — pair elements
+for a, b in zip(list1, list2):
+    print(a, b)
+
+# while
+while condition:
+    pass
+
+# Loop control
+for x in lst:
+    if x == 0: continue  # skip
+    if x < 0: break      # exit
+
+# else on loop (runs if no break)
+for x in lst:
+    if x == target: break
+else:
+    print("not found")</code></pre></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Functions -->
+      <div class="cs-section" id="py-functions" data-searchable>
+        <div class="cs-section-header cs-section-toggle">
+          <div class="cs-section-left">
+            <span class="cs-section-icon">🔧</span>
+            <span class="cs-section-title">Functions &amp; Decorators</span>
+            <span class="cs-section-badge py">Python</span>
+          </div>
+          <span class="cs-section-chevron">▼</span>
+        </div>
+        <div class="cs-section-body">
+          <div class="cs-cards">
+            <div class="cs-card">
+              <div class="cs-card-header"><span class="cs-card-title">Function Syntax</span><button class="cs-copy-btn">Copy</button></div>
+              <div class="cs-snippet"><pre><code class="language-python"># Basic
+def add(a, b):
+    return a + b
+
+# Default params
+def greet(name="World"):
+    return f"Hello, {name}!"
+
+# *args — variable positional
+def total(*nums):
+    return sum(nums)
+
+# **kwargs — keyword arguments
+def info(**data):
+    for k, v in data.items():
+        print(f"{k}: {v}")
+
+# Type hints (Python 3.5+)
+def divide(a: float, b: float) -> float:
+    return a / b
+
+# Lambda
+square = lambda x: x ** 2
+double = lambda x: x * 2
+
+# Higher order
+nums = [1, 2, 3, 4, 5]
+list(map(lambda x: x*2, nums))   # [2,4,6,8,10]
+list(filter(lambda x: x>2, nums)) # [3,4,5]
+from functools import reduce
+reduce(lambda a,b: a+b, nums)    # 15</code></pre></div>
+            </div>
+            <div class="cs-card">
+              <div class="cs-card-header"><span class="cs-card-title">Decorators &amp; Closures</span><button class="cs-copy-btn">Copy</button></div>
+              <div class="cs-snippet"><pre><code class="language-python">from functools import wraps
+
+# Decorator
+def timer(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        import time
+        start = time.time()
+        result = func(*args, **kwargs)
+        print(f"{func.__name__}: {time.time()-start:.3f}s")
+        return result
+    return wrapper
+
+@timer
+def slow_fn():
+    pass
+
+# Closure
+def make_counter(start=0):
+    count = [start]
+    def increment():
+        count[0] += 1
+        return count[0]
+    return increment
+
+counter = make_counter(10)
+counter()  # 11
+counter()  # 12
+
+# Generator
+def fibonacci():
+    a, b = 0, 1
+    while True:
+        yield a
+        a, b = b, a + b</code></pre></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Data Structures -->
+      <div class="cs-section" id="py-ds" data-searchable>
+        <div class="cs-section-header cs-section-toggle">
+          <div class="cs-section-left">
+            <span class="cs-section-icon">📋</span>
+            <span class="cs-section-title">Data Structures</span>
+            <span class="cs-section-badge py">Python</span>
+          </div>
+          <span class="cs-section-chevron">▼</span>
+        </div>
+        <div class="cs-section-body">
+          <div class="cs-cards">
+            <div class="cs-card">
+              <div class="cs-card-header"><span class="cs-card-title">List Methods</span><button class="cs-copy-btn">Copy</button></div>
+              <div class="cs-snippet"><pre><code class="language-python">lst = [3, 1, 4, 1, 5]
+
+lst.append(9)          # add to end
+lst.insert(2, 10)      # insert at index 2
+lst.remove(1)          # remove first 1
+lst.pop()              # remove & return last
+lst.pop(0)             # remove & return index 0
+lst.sort()             # in-place sort
+lst.sort(key=abs, reverse=True)
+sorted(lst)            # returns new list
+lst.reverse()          # in-place reverse
+lst.index(4)           # first index of 4
+lst.count(1)           # count occurrences
+lst.extend([6, 7])     # append iterable
+
+# Slicing
+lst[1:4]               # index 1,2,3
+lst[::2]               # every other
+lst[::-1]              # reversed copy
+
+# Comprehensions
+squares = [x**2 for x in range(10)]
+evens = [x for x in range(20) if x%2==0]</code></pre></div>
+            </div>
+            <div class="cs-card">
+              <div class="cs-card-header"><span class="cs-card-title">Dict &amp; Set</span><button class="cs-copy-btn">Copy</button></div>
+              <div class="cs-snippet"><pre><code class="language-python">d = {"a": 1, "b": 2}
+d["c"] = 3             # add/update
+d.get("x", 0)          # 0 if missing
+d.keys(); d.values(); d.items()
+d.pop("a")             # remove and return
+d.update({"d": 4})     # merge
+"b" in d               # True
+del d["b"]
+
+# Dict comprehension
+inv = {v: k for k, v in d.items()}
+
+# Collections
+from collections import defaultdict, Counter, deque
+dd = defaultdict(list)  # default value factory
+dd["x"].append(1)
+ctr = Counter("aabbc")  # {'a':2,'b':2,'c':1}
+ctr.most_common(2)
+
+# Set
+s = {1, 2, 3}
+s.add(4); s.discard(1)
+a | b   # union
+a &amp; b   # intersection
+a - b   # difference
+a ^ b   # symmetric difference</code></pre></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OOP -->
+      <div class="cs-section" id="py-oop" data-searchable>
+        <div class="cs-section-header cs-section-toggle">
+          <div class="cs-section-left">
+            <span class="cs-section-icon">🏗️</span>
+            <span class="cs-section-title">Object-Oriented Programming</span>
+            <span class="cs-section-badge py">Python</span>
+          </div>
+          <span class="cs-section-chevron">▼</span>
+        </div>
+        <div class="cs-section-body">
+          <div class="cs-cards">
+            <div class="cs-card">
+              <div class="cs-card-header"><span class="cs-card-title">Class Syntax</span><button class="cs-copy-btn">Copy</button></div>
+              <div class="cs-snippet"><pre><code class="language-python">class Animal:
+    species = "Animal"        # class variable
+
+    def __init__(self, name, age):
+        self.name = name      # instance variable
+        self._age = age       # convention: protected
+        self.__secret = "x"   # name-mangled
+
+    def __str__(self): return f"{self.name}"
+    def __repr__(self): return f"Animal('{self.name}')"
+    def __len__(self): return self._age
+
+    @property
+    def age(self): return self._age
+    @age.setter
+    def age(self, v):
+        if v &lt; 0: raise ValueError
+        self._age = v
+
+    @classmethod
+    def create(cls, name): return cls(name, 0)
+
+    @staticmethod
+    def is_alive(): return True
+
+class Dog(Animal):
+    def __init__(self, name):
+        super().__init__(name, 0)
+
+    def speak(self): return f"{self.name}: Woof!"</code></pre></div>
+            </div>
+            <div class="cs-card">
+              <div class="cs-card-header"><span class="cs-card-title">Dunder Methods</span></div>
+              <table class="cs-table">
+                <thead><tr><th>Method</th><th>Triggered by</th></tr></thead>
+                <tbody>
+                  <tr><td><code class="cs-code py">__init__</code></td><td class="cs-desc">Class instantiation</td></tr>
+                  <tr><td><code class="cs-code py">__str__</code></td><td class="cs-desc">str(obj), print(obj)</td></tr>
+                  <tr><td><code class="cs-code py">__repr__</code></td><td class="cs-desc">repr(obj), REPL display</td></tr>
+                  <tr><td><code class="cs-code py">__len__</code></td><td class="cs-desc">len(obj)</td></tr>
+                  <tr><td><code class="cs-code py">__eq__, __lt__</code></td><td class="cs-desc">==, &lt; comparisons</td></tr>
+                  <tr><td><code class="cs-code py">__add__</code></td><td class="cs-desc">obj + other</td></tr>
+                  <tr><td><code class="cs-code py">__getitem__</code></td><td class="cs-desc">obj[key]</td></tr>
+                  <tr><td><code class="cs-code py">__iter__, __next__</code></td><td class="cs-desc">for loop iteration</td></tr>
+                  <tr><td><code class="cs-code py">__enter__, __exit__</code></td><td class="cs-desc">with statement</td></tr>
+                  <tr><td><code class="cs-code py">__call__</code></td><td class="cs-desc">obj()</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- File I/O -->
+      <div class="cs-section" id="py-fileio" data-searchable>
+        <div class="cs-section-header cs-section-toggle">
+          <div class="cs-section-left">
+            <span class="cs-section-icon">💾</span>
+            <span class="cs-section-title">File I/O &amp; Error Handling</span>
+            <span class="cs-section-badge py">Python</span>
+          </div>
+          <span class="cs-section-chevron">▼</span>
+        </div>
+        <div class="cs-section-body">
+          <div class="cs-cards">
+            <div class="cs-card">
+              <div class="cs-card-header"><span class="cs-card-title">File Operations</span><button class="cs-copy-btn">Copy</button></div>
+              <div class="cs-snippet"><pre><code class="language-python"># Reading
+with open("file.txt", "r") as f:
+    content = f.read()        # whole file
+    lines = f.readlines()     # list of lines
+    for line in f:            # line by line
+        pass
+
+# Writing
+with open("out.txt", "w") as f:
+    f.write("Hello\n")
+
+# Appending
+with open("log.txt", "a") as f:
+    f.write("new entry\n")
+
+# Binary mode
+with open("img.png", "rb") as f:
+    data = f.read()
+
+# JSON
+import json
+with open("data.json", "w") as f:
+    json.dump(obj, f, indent=2)
+with open("data.json") as f:
+    obj = json.load(f)
+
+# CSV
+import csv
+with open("data.csv", "w", newline="") as f:
+    writer = csv.writer(f)
+    writer.writerow(["name", "age"])</code></pre></div>
+            </div>
+            <div class="cs-card">
+              <div class="cs-card-header"><span class="cs-card-title">Error Handling</span><button class="cs-copy-btn">Copy</button></div>
+              <div class="cs-snippet"><pre><code class="language-python">try:
+    result = 10 / 0
+except ZeroDivisionError as e:
+    print(f"Error: {e}")
+except (TypeError, ValueError) as e:
+    print(f"Type/Value error: {e}")
+except Exception as e:
+    print(f"Unexpected: {e}")
+else:
+    print("No error occurred")
+finally:
+    print("Always runs")
+
+# Raise exception
+def validate(age):
+    if age &lt; 0:
+        raise ValueError(f"Invalid age: {age}")
+
+# Custom exception
+class AppError(Exception):
+    def __init__(self, msg, code=0):
+        super().__init__(msg)
+        self.code = code
+
+# Context manager
+class ManagedFile:
+    def __init__(self, path): self.path = path
+    def __enter__(self):
+        self.file = open(self.path)
+        return self.file
+    def __exit__(self, *args):
+        self.file.close()</code></pre></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end cs-python -->
+
+    <!-- ═══════════════════════ C++ VS PYTHON ═══════════════════════ -->
+    <div class="cs-content" id="cs-versus">
+
+      <div style="margin-bottom:2rem;padding:1.25rem;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);display:flex;align-items:center;gap:1rem;">
+        <div style="font-size:1.75rem">⚡</div>
+        <div>
+          <div style="font-weight:700;margin-bottom:0.2rem">Side-by-Side Comparison</div>
+          <div style="font-size:0.875rem;color:var(--text-secondary)">The same concepts in both languages — left is C++, right is Python.</div>
+        </div>
+      </div>
+
+      <div class="vs-block" data-searchable>
+        <div class="vs-block-title">📦 Hello World</div>
+        <div class="vs-panes">
+          <div class="vs-pane">
+            <span class="vs-lang-tag cs-section-badge">C++</span>
+            <pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    cout &lt;&lt; "Hello, World!" &lt;&lt; endl;
+    return 0;
+}</code></pre>
+          </div>
+          <div class="vs-pane">
+            <span class="vs-lang-tag cs-section-badge py">Python</span>
+            <pre><code class="language-python">print("Hello, World!")</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="vs-block" data-searchable>
+        <div class="vs-block-title">🔁 For Loop</div>
+        <div class="vs-panes">
+          <div class="vs-pane">
+            <span class="vs-lang-tag cs-section-badge">C++</span>
+            <pre><code class="language-cpp">for (int i = 0; i &lt; 5; i++) {
+    cout &lt;&lt; i &lt;&lt; "\n";
+}
+// range-based for
+for (auto&amp; x : vec) {
+    cout &lt;&lt; x &lt;&lt; "\n";
+}</code></pre>
+          </div>
+          <div class="vs-pane">
+            <span class="vs-lang-tag cs-section-badge py">Python</span>
+            <pre><code class="language-python">for i in range(5):
+    print(i)
+
+# with index
+for i, x in enumerate(lst):
+    print(i, x)</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="vs-block" data-searchable>
+        <div class="vs-block-title">🔧 Functions</div>
+        <div class="vs-panes">
+          <div class="vs-pane">
+            <span class="vs-lang-tag cs-section-badge">C++</span>
+            <pre><code class="language-cpp">int add(int a, int b) {
+    return a + b;
+}
+
+// Default param
+void greet(string name = "World") {
+    cout &lt;&lt; "Hello, " &lt;&lt; name;
+}
+
+// Lambda
+auto sq = [](int x) { return x*x; };</code></pre>
+          </div>
+          <div class="vs-pane">
+            <span class="vs-lang-tag cs-section-badge py">Python</span>
+            <pre><code class="language-python">def add(a, b):
+    return a + b
+
+# Default param
+def greet(name="World"):
+    print(f"Hello, {name}")
+
+# Lambda
+sq = lambda x: x ** 2</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="vs-block" data-searchable>
+        <div class="vs-block-title">🏗️ Classes (OOP)</div>
+        <div class="vs-panes">
+          <div class="vs-pane">
+            <span class="vs-lang-tag cs-section-badge">C++</span>
+            <pre><code class="language-cpp">class Animal {
+private:
+    string name;
+public:
+    Animal(string n) : name(n) {}
+    virtual void speak() {
+        cout &lt;&lt; name &lt;&lt; " speaks";
+    }
+};
+
+class Dog : public Animal {
+public:
+    Dog(string n) : Animal(n) {}
+    void speak() override {
+        cout &lt;&lt; "Woof!";
+    }
+};</code></pre>
+          </div>
+          <div class="vs-pane">
+            <span class="vs-lang-tag cs-section-badge py">Python</span>
+            <pre><code class="language-python">class Animal:
+    def __init__(self, name):
+        self.name = name
+
+    def speak(self):
+        print(f"{self.name} speaks")
+
+class Dog(Animal):
+    def speak(self):
+        print("Woof!")</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="vs-block" data-searchable>
+        <div class="vs-block-title">📋 Arrays / Lists</div>
+        <div class="vs-panes">
+          <div class="vs-pane">
+            <span class="vs-lang-tag cs-section-badge">C++</span>
+            <pre><code class="language-cpp">// C-style array
+int arr[5] = {1,2,3,4,5};
+arr[0] = 10;
+
+// std::vector (dynamic)
+#include &lt;vector&gt;
+vector&lt;int&gt; v = {1,2,3};
+v.push_back(4);
+v.size();
+sort(v.begin(), v.end());</code></pre>
+          </div>
+          <div class="vs-pane">
+            <span class="vs-lang-tag cs-section-badge py">Python</span>
+            <pre><code class="language-python">lst = [1, 2, 3, 4, 5]
+lst[0] = 10
+
+# Dynamic — always
+lst.append(4)
+len(lst)
+lst.sort()
+sorted(lst)       # new sorted copy
+lst[::-1]         # reverse</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="vs-block" data-searchable>
+        <div class="vs-block-title">🗂️ Maps / Dictionaries</div>
+        <div class="vs-panes">
+          <div class="vs-pane">
+            <span class="vs-lang-tag cs-section-badge">C++</span>
+            <pre><code class="language-cpp">#include &lt;map&gt;
+map&lt;string,int&gt; m;
+m["a"] = 1;
+m.count("a");    // 1 if exists
+m.erase("a");
+for (auto&amp; [k,v] : m)
+    cout &lt;&lt; k &lt;&lt; ": " &lt;&lt; v &lt;&lt; "\n";</code></pre>
+          </div>
+          <div class="vs-pane">
+            <span class="vs-lang-tag cs-section-badge py">Python</span>
+            <pre><code class="language-python">d = {}
+d["a"] = 1
+"a" in d         # True
+del d["a"]
+d.get("x", 0)    # default value
+for k, v in d.items():
+    print(f"{k}: {v}")</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="vs-block" data-searchable>
+        <div class="vs-block-title">⚠️ Error Handling</div>
+        <div class="vs-panes">
+          <div class="vs-pane">
+            <span class="vs-lang-tag cs-section-badge">C++</span>
+            <pre><code class="language-cpp">try {
+    throw runtime_error("oops");
+} catch (const runtime_error&amp; e) {
+    cout &lt;&lt; e.what();
+} catch (...) {
+    cout &lt;&lt; "unknown error";
+}
+// RAII — no finally needed</code></pre>
+          </div>
+          <div class="vs-pane">
+            <span class="vs-lang-tag cs-section-badge py">Python</span>
+            <pre><code class="language-python">try:
+    raise ValueError("oops")
+except ValueError as e:
+    print(e)
+except Exception as e:
+    print(f"unknown: {e}")
+else:
+    print("no error")
+finally:
+    print("always runs")</code></pre>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end cs-versus -->
+
+  </div><!-- end cs-main -->
+</div><!-- end cs-page -->
+
+<script>
+/* ── TOC Navigation ── */
+document.querySelectorAll('.cs-toc-link').forEach(link => {
+  link.addEventListener('click', () => {
+    const tocLang = link.dataset.toc;
+    const sectionId = link.dataset.section;
+
+    // Switch tab
+    document.querySelectorAll('.cs-tab').forEach(t => t.classList.remove('active','cpp','python'));
+    const targetTab = document.querySelector(`.cs-tab[data-cs="${tocLang}"]`);
+    if (targetTab) { targetTab.classList.add('active', tocLang); }
+    document.querySelectorAll('.cs-content').forEach(c => c.classList.remove('active'));
+    const targetContent = document.getElementById('cs-' + tocLang);
+    if (targetContent) targetContent.classList.add('active');
+
+    // Scroll to section
+    if (sectionId) {
+      setTimeout(() => {
+        const section = document.getElementById(sectionId);
+        section?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+
+    // Update active TOC link
+    document.querySelectorAll('.cs-toc-link').forEach(l => l.classList.remove('active'));
+    link.classList.add('active');
+
+    // Re-highlight
+    setTimeout(() => {
+      if (window.hljs) document.querySelectorAll('pre code').forEach(el => hljs.highlightElement(el));
+    }, 150);
+  });
+});
+
+/* ── Section collapsible ── */
+document.querySelectorAll('.cs-section-toggle').forEach(header => {
+  header.addEventListener('click', () => {
+    header.closest('.cs-section').classList.toggle('collapsed');
+  });
+});
+
+/* ── Copy buttons ── */
+document.querySelectorAll('.cs-copy-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const block = btn.closest('.cs-card');
+    const text = (block?.querySelector('pre code') || block?.querySelector('pre'))?.textContent?.trim() || '';
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = btn.textContent;
+      btn.textContent = '✓';
+      btn.style.color = 'var(--python-color)';
+      setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 1600);
+    }).catch(() => {});
+  });
+});
+
+/* ── Cheatsheet search with highlight ── */
+const csSearch = document.getElementById('csSearch');
+if (csSearch) {
+  csSearch.addEventListener('input', () => {
+    const q = csSearch.value.toLowerCase().trim();
+    document.querySelectorAll('.cs-section').forEach(section => {
+      if (!q) {
+        section.style.display = '';
+        return;
+      }
+      const text = section.textContent.toLowerCase();
+      section.style.display = text.includes(q) ? '' : 'none';
+    });
+    document.querySelectorAll('.vs-block').forEach(block => {
+      if (!q) { block.style.display = ''; return; }
+      block.style.display = block.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+  });
+}
+
+/* ── hljs init ── */
+function runHljs() {
+  if (window.hljs) {
+    document.querySelectorAll('pre code').forEach(el => hljs.highlightElement(el));
+  }
+}
+document.addEventListener('DOMContentLoaded', () => {
+  runHljs();
+  setTimeout(runHljs, 800);
+});
+</script>
+
+<!-- FOOTER -->
+<footer class="footer" style="position:relative;z-index:1">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-logo"><div class="logo-icon">CC</div><span class="logo-text">CodeCraft</span></div>
+      <p class="footer-tagline">A free, self-paced platform for learning C++ and Python.</p>
+    </div>
+    <div>
+      <div class="footer-col-title">Navigate</div>
+      <a href="../index.html" class="footer-link">Home</a>
+      <a href="learn.html" class="footer-link">Learn</a>
+      <a href="quiz.html" class="footer-link">Quizzes</a>
+      <a href="projects.html" class="footer-link">Projects</a>
+    </div>
+  </div>
+  <div class="footer-bottom"><span>© 2025 CodeCraft.</span></div>
+</footer>
+</body>
+</html>

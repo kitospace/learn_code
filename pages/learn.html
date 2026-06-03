@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Learning Paths — CodeCraft</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <script src="../js/app.js" defer></script>
+  <style>
+    .path-hero {
+      padding: 6rem 2rem 3rem;
+      text-align: center;
+      background: linear-gradient(180deg, var(--bg-secondary) 0%, transparent 100%);
+      border-bottom: 1px solid var(--border);
+      margin-top: 64px;
+      position: relative; z-index: 1;
+    }
+    .level-badge {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.2rem 0.65rem;
+      border-radius: 100px;
+      font-family: var(--font-code);
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .topic-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      display: flex; align-items: flex-start; gap: 1rem;
+      cursor: pointer;
+      transition: all var(--transition);
+      text-decoration: none;
+    }
+    .topic-card:hover { border-color: var(--border-glow); transform: translateX(4px); }
+    .topic-card-icon {
+      width: 44px; height: 44px;
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+    }
+    .topic-card-body { flex: 1; min-width: 0; }
+    .topic-card-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .topic-card-desc { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; }
+    .topic-card-meta { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem; }
+    .topic-card-time { font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-code); }
+    .topics-list { display: flex; flex-direction: column; gap: 0.65rem; margin-top: 1.5rem; }
+    .path-section { max-width: 1100px; margin: 0 auto; padding: 3rem 2rem; position: relative; z-index: 1; }
+    .path-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; margin-top: 2rem; }
+    .path-col-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.25rem; }
+    .path-col-name { font-size: 1.5rem; font-weight: 800; }
+    .path-col-desc { font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 1.5rem; }
+    .stage-divider {
+      display: flex; align-items: center; gap: 1rem;
+      margin: 2rem 0 0.5rem;
+    }
+    .stage-divider-line { flex: 1; height: 1px; background: var(--border); }
+    @media(max-width:768px) { .path-columns { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="../index.html" class="navbar-logo">
+    <div class="logo-icon">CC</div>
+    <span class="logo-text">CodeCraft</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="../index.html" class="nav-link">Home</a></li>
+    <li><a href="learn.html" class="nav-link active">Learn</a></li>
+    <li><a href="lesson.html" class="nav-link">Lessons</a></li>
+    <li><a href="quiz.html" class="nav-link">Quizzes</a></li>
+    <li><a href="projects.html" class="nav-link">Projects</a></li>
+    <li><a href="cheatsheet.html" class="nav-link">Cheat Sheet</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="theme-toggle" id="themeToggle">☀️</button>
+  </div>
+  <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" id="mobileClose">✕</button>
+  <a href="../index.html" class="mobile-nav-link">Home</a>
+  <a href="learn.html" class="mobile-nav-link">Learn</a>
+  <a href="lesson.html" class="mobile-nav-link">Lessons</a>
+  <a href="quiz.html" class="mobile-nav-link">Quizzes</a>
+  <a href="projects.html" class="mobile-nav-link">Projects</a>
+  <a href="cheatsheet.html" class="mobile-nav-link">Cheat Sheet</a>
+</div>
+
+<!-- HERO -->
+<div class="path-hero">
+  <span class="section-tag">// learning paths</span>
+  <h1 class="page-title">Choose Your Language</h1>
+  <p class="page-desc">Structured roadmaps from Basics → Intermediate → Advanced. Pick a language and start your journey.</p>
+  <div class="search-bar" style="margin-top:1.5rem">
+    <span class="search-icon">🔍</span>
+    <input type="text" class="search-input" id="searchInput" placeholder="Search topics... (e.g. pointers, decorators)" />
+  </div>
+</div>
+
+<!-- PATH CONTENT -->
+<div class="path-section">
+  <div class="path-columns">
+
+    <!-- C++ COLUMN -->
+    <div class="path-col" id="col-cpp">
+      <div class="path-col-header" data-lang-col="cpp">
+        <span style="font-size:2rem">⚙️</span>
+        <h2 class="path-col-name" style="color:var(--cpp-color)">C++</h2>
+      </div>
+      <p class="path-col-desc">From compiled basics to systems programming, multithreading, and advanced DSA.</p>
+
+      <!-- Basic -->
+      <div class="stage-divider">
+        <span class="stage-badge badge-basic">Basic</span>
+        <div class="stage-divider-line"></div>
+        <span style="font-size:0.75rem;color:var(--text-muted);font-family:var(--font-code)">8 lessons</span>
+      </div>
+      <div class="topics-list">
+        <a href="lesson.html?lang=cpp&topic=hello-world" class="topic-card" data-searchable>
+          <div class="topic-card-icon">👋</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">Hello World & Setup</div>
+            <div class="topic-card-desc">Your first C++ program, compiler setup, and the compilation process.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-basic">Basic</span>
+              <span class="topic-card-time">⏱ 10 min</span>
+            </div>
+          </div>
+        </a>
+        <a href="lesson.html?lang=cpp&topic=variables" class="topic-card" data-searchable>
+          <div class="topic-card-icon">📦</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">Variables & Data Types</div>
+            <div class="topic-card-desc">int, float, double, char, bool, string — type system and memory sizes.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-basic">Basic</span>
+              <span class="topic-card-time">⏱ 15 min</span>
+            </div>
+          </div>
+        </a>
+        <a href="lesson.html?lang=cpp&topic=operators" class="topic-card" data-searchable>
+          <div class="topic-card-icon">➕</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">Operators & Expressions</div>
+            <div class="topic-card-desc">Arithmetic, comparison, logical, bitwise, and assignment operators.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-basic">Basic</span>
+              <span class="topic-card-time">⏱ 12 min</span>
+            </div>
+          </div>
+        </a>
+        <a href="lesson.html?lang=cpp&topic=control-flow" class="topic-card" data-searchable>
+          <div class="topic-card-icon">🔀</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">Control Flow — if / else / switch</div>
+            <div class="topic-card-desc">Conditional logic, ternary operator, and switch-case patterns.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-basic">Basic</span>
+              <span class="topic-card-time">⏱ 14 min</span>
+            </div>
+          </div>
+        </a>
+        <a href="lesson.html?lang=cpp&topic=loops" class="topic-card" data-searchable>
+          <div class="topic-card-icon">🔁</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">Loops — for / while / do-while</div>
+            <div class="topic-card-desc">Iteration, loop control (break/continue), and range-based for loops.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-basic">Basic</span>
+              <span class="topic-card-time">⏱ 16 min</span>
+            </div>
+          </div>
+        </a>
+        <a href="lesson.html?lang=cpp&topic=functions" class="topic-card" data-searchable>
+          <div class="topic-card-icon">🔧</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">Functions</div>
+            <div class="topic-card-desc">Declaration, definition, parameters, return types, overloading, recursion.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-basic">Basic</span>
+              <span class="topic-card-time">⏱ 20 min</span>
+            </div>
+          </div>
+        </a>
+        <a href="lesson.html?lang=cpp&topic=arrays" class="topic-card" data-searchable>
+          <div class="topic-card-icon">📋</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">Arrays & Strings</div>
+            <div class="topic-card-desc">1D/2D arrays, C-strings, std::string, and common string operations.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-basic">Basic</span>
+              <span class="topic-card-time">⏱ 18 min</span>
+            </div>
+          </div>
+        </a>
+        <a href="lesson.html?lang=cpp&topic=pointers" class="topic-card" data-searchable>
+          <div class="topic-card-icon">📍</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">Pointers & References</div>
+            <div class="topic-card-desc">Memory addresses, dereferencing, pointer arithmetic, and references.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-basic">Basic</span>
+              <span class="topic-card-time">⏱ 25 min</span>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Intermediate -->
+      <div class="stage-divider" style="margin-top:2.5rem">
+        <span class="stage-badge badge-intermediate">Intermediate</span>
+        <div class="stage-divider-line"></div>
+        <span style="font-size:0.75rem;color:var(--text-muted);font-family:var(--font-code)">7 lessons</span>
+      </div>
+      <div class="topics-list">
+        <a href="lesson.html?lang=cpp&topic=oop" class="topic-card" data-searchable>
+          <div class="topic-card-icon">🏗️</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">OOP — Classes & Objects</div>
+            <div class="topic-card-desc">Encapsulation, constructors, destructors, access specifiers.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-intermediate">Intermediate</span>
+              <span class="topic-card-time">⏱ 30 min</span>
+            </div>
+          </div>
+        </a>
+        <a href="lesson.html?lang=cpp&topic=inheritance" class="topic-card" data-searchable>
+          <div class="topic-card-icon">🧬</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">Inheritance & Polymorphism</div>
+            <div class="topic-card-desc">Single/multiple inheritance, virtual functions, and abstract classes.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-intermediate">Intermediate</span>
+              <span class="topic-card-time">⏱ 35 min</span>
+            </div>
+          </div>
+        </a>
+        <a href="lesson.html?lang=cpp&topic=stl" class="topic-card" data-searchable>
+          <div class="topic-card-icon">📚</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">STL — Containers</div>
+            <div class="topic-card-desc">vector, list, deque, map, set, unordered_map — when to use each.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-intermediate">Intermediate</span>
+              <span class="topic-card-time">⏱ 40 min</span>
+            </div>
+          </div>
+        </a>
+        <a href="lesson.html?lang=cpp&topic=file-io" class="topic-card" data-searchable>
+          <div class="topic-card-icon">💾</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">File I/O</div>
+            <div class="topic-card-desc">fstream, ifstream, ofstream — reading and writing files.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-intermediate">Intermediate</span>
+              <span class="topic-card-time">⏱ 20 min</span>
+            </div>
+          </div>
+        </a>
+        <a href="lesson.html?lang=cpp&topic=exceptions" class="topic-card" data-searchable>
+          <div class="topic-card-icon">⚠️</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">Exception Handling</div>
+            <div class="topic-card-desc">try/catch/throw, custom exceptions, RAII pattern.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-intermediate">Intermediate</span>
+              <span class="topic-card-time">⏱ 22 min</span>
+            </div>
+          </div>
+        </a>
+        <a href="lesson.html?lang=cpp&topic=templates" class="topic-card" data-searchable>
+          <div class="topic-card-icon">🔮</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">Templates & Generics</div>
+            <div class="topic-card-desc">Function templates, class templates, template specialization.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-intermediate">Intermediate</span>
+              <span class="topic-card-time">⏱ 28 min</span>
+            </div>
+          </div>
+        </a>
+        <a href="lesson.html?lang=cpp&topic=lambda" class="topic-card" data-searchable>
+          <div class="topic-card-icon">λ</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">Lambda & Functional</div>
+            <div class="topic-card-desc">Lambda expressions, std::function, algorithm lambdas (sort, transform).</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-intermediate">Intermediate</span>
+              <span class="topic-card-time">⏱ 24 min</span>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Advanced -->
+      <div class="stage-divider" style="margin-top:2.5rem">
+        <span class="stage-badge badge-advanced">Advanced</span>
+        <div class="stage-divider-line"></div>
+        <span style="font-size:0.75rem;color:var(--text-muted);font-family:var(--font-code)">8 lessons</span>
+      </div>
+      <div class="topics-list">
+        <a href="lesson.html?lang=cpp&topic=smart-pointers" class="topic-card" data-searchable>
+          <div class="topic-card-icon">🧠</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">Smart Pointers</div>
+            <div class="topic-card-desc">unique_ptr, shared_ptr, weak_ptr — modern memory management.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-advanced">Advanced</span>
+              <span class="topic-card-time">⏱ 30 min</span>
+            </div>
+          </div>
+        </a>
+        <a href="lesson.html?lang=cpp&topic=move-semantics" class="topic-card" data-searchable>
+          <div class="topic-card-icon">⚡</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">Move Semantics & Rvalue Refs</div>
+            <div class="topic-card-desc">std::move, rvalue references, perfect forwarding, copy elision.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-advanced">Advanced</span>
+              <span class="topic-card-time">⏱ 35 min</span>
+            </div>
+          </div>
+        </a>
+        <a href="lesson.html?lang=cpp&topic=multithreading" class="topic-card" data-searchable>
+          <div class="topic-card-icon">🧵</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">Multithreading</div>
+            <div class="topic-card-desc">std::thread, mutex, condition_variable, atomic, async/future.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-advanced">Advanced</span>
+              <span class="topic-card-time">⏱ 45 min</span>
+            </div>
+          </div>
+        </a>
+        <a href="lesson.html?lang=cpp&topic=dsa-sorting" class="topic-card" data-searchable>
+          <div class="topic-card-icon">📊</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">DSA — Sorting Algorithms</div>
+            <div class="topic-card-desc">Bubble, Selection, Insertion, Merge, Quick Sort — analysis & implementation.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-advanced">Advanced</span>
+              <span class="topic-card-time">⏱ 50 min</span>
+            </div>
+          </div>
+        </a>
+        <a href="lesson.html?lang=cpp&topic=dsa-trees" class="topic-card" data-searchable>
+          <div class="topic-card-icon">🌲</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">DSA — Trees & Graphs</div>
+            <div class="topic-card-desc">BST, AVL, heaps, DFS, BFS, Dijkstra — with C++ implementations.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-advanced">Advanced</span>
+              <span class="topic-card-time">⏱ 60 min</span>
+            </div>
+          </div>
+        </a>
+        <a href="lesson.html?lang=cpp&topic=design-patterns" class="topic-card" data-searchable>
+          <div class="topic-card-icon">🎨</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">Design Patterns</div>
+            <div class="topic-card-desc">Singleton, Factory, Observer, Strategy, Command — with C++ examples.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-advanced">Advanced</span>
+              <span class="topic-card-time">⏱ 55 min</span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div><!-- end C++ column -->
+
+    <!-- PYTHON COLUMN -->
+    <div class="path-col" id="col-python">
+      <div class="path-col-header" data-lang-col="python">
+        <span style="font-size:2rem">🐍</span>
+        <h2 class="path-col-name" style="color:var(--python-color)">Python</h2>
+      </div>
+      <p class="path-col-desc">From readable syntax basics to async programming, metaclasses, and ML fundamentals.</p>
+
+      <!-- Basic -->
+      <div class="stage-divider">
+        <span class="stage-badge badge-basic">Basic</span>
+        <div class="stage-divider-line"></div>
+        <span style="font-size:0.75rem;color:var(--text-muted);font-family:var(--font-code)">8 lessons</span>
+      </div>
+      <div class="topics-list">
+        <a href="lesson.html?lang=python&topic=hello-world" class="topic-card" data-searchable>
+          <div class="topic-card-icon">👋</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">Hello World & Setup</div>
+            <div class="topic-card-desc">Your first Python script, interpreter vs script mode, print() and input().</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-basic">Basic</span>
+              <span class="topic-card-time">⏱ 8 min</span>
+            </div>
+          </div>
+        </a>
+        <a href="lesson.html?lang=python&topic=variables" class="topic-card" data-searchable>
+          <div class="topic-card-icon">📦</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">Variables & Data Types</div>
+            <div class="topic-card-desc">int, float, str, bool, None — dynamic typing and type() function.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-basic">Basic</span>
+              <span class="topic-card-time">⏱ 12 min</span>
+            </div>
+          </div>
+        </a>
+        <a href="lesson.html?lang=python&topic=operators" class="topic-card" data-searchable>
+          <div class="topic-card-icon">➕</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">Operators & Expressions</div>
+            <div class="topic-card-desc">Arithmetic, comparison, logical, identity (is), membership (in).</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-basic">Basic</span>
+              <span class="topic-card-time">⏱ 10 min</span>
+            </div>
+          </div>
+        </a>
+        <a href="lesson.html?lang=python&topic=control-flow" class="topic-card" data-searchable>
+          <div class="topic-card-icon">🔀</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">Control Flow — if / elif / else</div>
+            <div class="topic-card-desc">Conditional logic, match-case (Python 3.10+), truthiness rules.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-basic">Basic</span>
+              <span class="topic-card-time">⏱ 12 min</span>
+            </div>
+          </div>
+        </a>
+        <a href="lesson.html?lang=python&topic=loops" class="topic-card" data-searchable>
+          <div class="topic-card-icon">🔁</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">Loops — for / while</div>
+            <div class="topic-card-desc">range(), enumerate(), zip(), break, continue, else on loops.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-basic">Basic</span>
+              <span class="topic-card-time">⏱ 15 min</span>
+            </div>
+          </div>
+        </a>
+        <a href="lesson.html?lang=python&topic=functions" class="topic-card" data-searchable>
+          <div class="topic-card-icon">🔧</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">Functions</div>
+            <div class="topic-card-desc">def, *args, **kwargs, default params, return values, docstrings.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-basic">Basic</span>
+              <span class="topic-card-time">⏱ 18 min</span>
+            </div>
+          </div>
+        </a>
+        <a href="lesson.html?lang=python&topic=lists" class="topic-card" data-searchable>
+          <div class="topic-card-icon">📋</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">Lists & Tuples</div>
+            <div class="topic-card-desc">Indexing, slicing, list methods, mutability difference, packing/unpacking.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-basic">Basic</span>
+              <span class="topic-card-time">⏱ 18 min</span>
+            </div>
+          </div>
+        </a>
+        <a href="lesson.html?lang=python&topic=dicts" class="topic-card" data-searchable>
+          <div class="topic-card-icon">🗂️</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">Dicts & Sets</div>
+            <div class="topic-card-desc">Key-value pairs, dict methods, set operations, when to use each.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-basic">Basic</span>
+              <span class="topic-card-time">⏱ 16 min</span>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Intermediate -->
+      <div class="stage-divider" style="margin-top:2.5rem">
+        <span class="stage-badge badge-intermediate">Intermediate</span>
+        <div class="stage-divider-line"></div>
+        <span style="font-size:0.75rem;color:var(--text-muted);font-family:var(--font-code)">7 lessons</span>
+      </div>
+      <div class="topics-list">
+        <a href="lesson.html?lang=python&topic=oop" class="topic-card" data-searchable>
+          <div class="topic-card-icon">🏗️</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">OOP — Classes & Objects</div>
+            <div class="topic-card-desc">__init__, self, class vs instance vars, __str__, __repr__, @classmethod.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-intermediate">Intermediate</span>
+              <span class="topic-card-time">⏱ 28 min</span>
+            </div>
+          </div>
+        </a>
+        <a href="lesson.html?lang=python&topic=comprehensions" class="topic-card" data-searchable>
+          <div class="topic-card-icon">⚡</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">Comprehensions</div>
+            <div class="topic-card-desc">List, dict, set comprehensions — readable one-liners that replace loops.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-intermediate">Intermediate</span>
+              <span class="topic-card-time">⏱ 18 min</span>
+            </div>
+          </div>
+        </a>
+        <a href="lesson.html?lang=python&topic=decorators" class="topic-card" data-searchable>
+          <div class="topic-card-icon">🎀</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">Decorators</div>
+            <div class="topic-card-desc">First-class functions, closures, @decorator syntax, functools.wraps.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-intermediate">Intermediate</span>
+              <span class="topic-card-time">⏱ 25 min</span>
+            </div>
+          </div>
+        </a>
+        <a href="lesson.html?lang=python&topic=modules" class="topic-card" data-searchable>
+          <div class="topic-card-icon">📦</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">Modules & Packages</div>
+            <div class="topic-card-desc">import, __name__, packages, __init__.py, pip, virtual environments.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-intermediate">Intermediate</span>
+              <span class="topic-card-time">⏱ 20 min</span>
+            </div>
+          </div>
+        </a>
+        <a href="lesson.html?lang=python&topic=file-io" class="topic-card" data-searchable>
+          <div class="topic-card-icon">💾</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">File I/O & Context Managers</div>
+            <div class="topic-card-desc">open(), with statement, read/write modes, JSON/CSV handling.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-intermediate">Intermediate</span>
+              <span class="topic-card-time">⏱ 22 min</span>
+            </div>
+          </div>
+        </a>
+        <a href="lesson.html?lang=python&topic=exceptions" class="topic-card" data-searchable>
+          <div class="topic-card-icon">⚠️</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">Error Handling</div>
+            <div class="topic-card-desc">try/except/else/finally, custom exceptions, raising exceptions.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-intermediate">Intermediate</span>
+              <span class="topic-card-time">⏱ 18 min</span>
+            </div>
+          </div>
+        </a>
+        <a href="lesson.html?lang=python&topic=iterators" class="topic-card" data-searchable>
+          <div class="topic-card-icon">🔄</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">Iterators & Generators</div>
+            <div class="topic-card-desc">__iter__, __next__, yield, generator expressions, infinite sequences.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-intermediate">Intermediate</span>
+              <span class="topic-card-time">⏱ 26 min</span>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Advanced -->
+      <div class="stage-divider" style="margin-top:2.5rem">
+        <span class="stage-badge badge-advanced">Advanced</span>
+        <div class="stage-divider-line"></div>
+        <span style="font-size:0.75rem;color:var(--text-muted);font-family:var(--font-code)">8 lessons</span>
+      </div>
+      <div class="topics-list">
+        <a href="lesson.html?lang=python&topic=async" class="topic-card" data-searchable>
+          <div class="topic-card-icon">⚡</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">Async / Await</div>
+            <div class="topic-card-desc">asyncio, coroutines, event loops, aiohttp, concurrent tasks.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-advanced">Advanced</span>
+              <span class="topic-card-time">⏱ 40 min</span>
+            </div>
+          </div>
+        </a>
+        <a href="lesson.html?lang=python&topic=metaclasses" class="topic-card" data-searchable>
+          <div class="topic-card-icon">🧬</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">Metaclasses</div>
+            <div class="topic-card-desc">type(), __metaclass__, class creation hooks, descriptors, __slots__.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-advanced">Advanced</span>
+              <span class="topic-card-time">⏱ 45 min</span>
+            </div>
+          </div>
+        </a>
+        <a href="lesson.html?lang=python&topic=dsa-sorting" class="topic-card" data-searchable>
+          <div class="topic-card-icon">📊</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">DSA — Sorting & Searching</div>
+            <div class="topic-card-desc">Python implementations of merge sort, quicksort, binary search, heapq.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-advanced">Advanced</span>
+              <span class="topic-card-time">⏱ 50 min</span>
+            </div>
+          </div>
+        </a>
+        <a href="lesson.html?lang=python&topic=dsa-trees" class="topic-card" data-searchable>
+          <div class="topic-card-icon">🌲</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">DSA — Trees & Graphs</div>
+            <div class="topic-card-desc">BST, heaps, DFS, BFS, Dijkstra — Pythonic implementations.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-advanced">Advanced</span>
+              <span class="topic-card-time">⏱ 60 min</span>
+            </div>
+          </div>
+        </a>
+        <a href="lesson.html?lang=python&topic=ml-basics" class="topic-card" data-searchable>
+          <div class="topic-card-icon">🤖</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">ML Basics with NumPy</div>
+            <div class="topic-card-desc">Arrays, broadcasting, linear algebra, and intro to scikit-learn.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-advanced">Advanced</span>
+              <span class="topic-card-time">⏱ 55 min</span>
+            </div>
+          </div>
+        </a>
+        <a href="lesson.html?lang=python&topic=testing" class="topic-card" data-searchable>
+          <div class="topic-card-icon">🧪</div>
+          <div class="topic-card-body">
+            <div class="topic-card-title">Testing with pytest</div>
+            <div class="topic-card-desc">Unit tests, fixtures, parametrize, mocking, TDD workflow.</div>
+            <div class="topic-card-meta">
+              <span class="level-badge badge-advanced">Advanced</span>
+              <span class="topic-card-time">⏱ 35 min</span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div><!-- end Python column -->
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-logo"><div class="logo-icon">CC</div><span class="logo-text">CodeCraft</span></div>
+      <p class="footer-tagline">A free, self-paced platform for learning C++ and Python.</p>
+    </div>
+    <div>
+      <div class="footer-col-title">Navigate</div>
+      <a href="../index.html" class="footer-link">Home</a>
+      <a href="learn.html" class="footer-link">Learn</a>
+      <a href="quiz.html" class="footer-link">Quizzes</a>
+      <a href="projects.html" class="footer-link">Projects</a>
+    </div>
+    <div>
+      <div class="footer-col-title">Resources</div>
+      <a href="cheatsheet.html" class="footer-link">Cheat Sheets</a>
+      <a href="lesson.html" class="footer-link">Lessons</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 CodeCraft.</span>
+  </div>
+</footer>
+</body>
+</html>
