@@ -7,14 +7,18 @@
   <link rel="stylesheet" href="../css/style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
+  <script src="../js/lessons.js" defer></script>
   <script src="../js/app.js" defer></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      document.querySelectorAll('pre code').forEach((el) => {
-        if (window.hljs) hljs.highlightElement(el);
-      });
+    // Run the lesson renderer after both scripts load
+    window.addEventListener('load', () => {
+      if (typeof renderLesson === 'function') renderLesson();
     });
   </script>
+  <style>
+    /* Sidebar scrollable without pushing layout */
+    .sidebar { overflow-y: auto; }
+  </style>
 </head>
 <body>
 
@@ -50,257 +54,80 @@
 <!-- LESSON LAYOUT -->
 <div class="lesson-layout">
 
-  <!-- SIDEBAR -->
+  <!-- ── SIDEBAR ── -->
   <aside class="sidebar">
+
     <div class="sidebar-section">
       <div class="sidebar-section-title">C++ · Basics</div>
-      <a href="lesson.html?lang=cpp&topic=hello-world" class="sidebar-link" data-topic="cpp-hello-world">Hello World &amp; Setup</a>
-      <a href="lesson.html?lang=cpp&topic=variables" class="sidebar-link" data-topic="cpp-variables">Variables &amp; Types</a>
-      <a href="lesson.html?lang=cpp&topic=operators" class="sidebar-link" data-topic="cpp-operators">Operators</a>
-      <a href="lesson.html?lang=cpp&topic=pointers" class="sidebar-link active" data-topic="cpp-pointers">Pointers &amp; References</a>
-      <a href="lesson.html?lang=cpp&topic=control-flow" class="sidebar-link" data-topic="cpp-control-flow">Control Flow</a>
-      <a href="lesson.html?lang=cpp&topic=loops" class="sidebar-link" data-topic="cpp-loops">Loops</a>
-      <a href="lesson.html?lang=cpp&topic=functions" class="sidebar-link" data-topic="cpp-functions">Functions</a>
-      <a href="lesson.html?lang=cpp&topic=arrays" class="sidebar-link" data-topic="cpp-arrays">Arrays &amp; Strings</a>
+      <a href="lesson.html?lang=cpp&topic=hello-world"   class="sidebar-link" data-topic="cpp-hello-world">Hello World &amp; Setup</a>
+      <a href="lesson.html?lang=cpp&topic=variables"     class="sidebar-link" data-topic="cpp-variables">Variables &amp; Types</a>
+      <a href="lesson.html?lang=cpp&topic=operators"     class="sidebar-link" data-topic="cpp-operators">Operators</a>
+      <a href="lesson.html?lang=cpp&topic=control-flow"  class="sidebar-link" data-topic="cpp-control-flow">Control Flow</a>
+      <a href="lesson.html?lang=cpp&topic=loops"         class="sidebar-link" data-topic="cpp-loops">Loops</a>
+      <a href="lesson.html?lang=cpp&topic=functions"     class="sidebar-link" data-topic="cpp-functions">Functions</a>
+      <a href="lesson.html?lang=cpp&topic=arrays"        class="sidebar-link" data-topic="cpp-arrays">Arrays &amp; Strings</a>
+      <a href="lesson.html?lang=cpp&topic=pointers"      class="sidebar-link" data-topic="cpp-pointers">Pointers &amp; References</a>
     </div>
+
     <div class="sidebar-section">
       <div class="sidebar-section-title">C++ · Intermediate</div>
-      <a href="lesson.html?lang=cpp&topic=oop" class="sidebar-link" data-topic="cpp-oop">Classes &amp; Objects</a>
-      <a href="lesson.html?lang=cpp&topic=inheritance" class="sidebar-link" data-topic="cpp-inheritance">Inheritance</a>
-      <a href="lesson.html?lang=cpp&topic=stl" class="sidebar-link" data-topic="cpp-stl">STL Containers</a>
-      <a href="lesson.html?lang=cpp&topic=file-io" class="sidebar-link" data-topic="cpp-file-io">File I/O</a>
-      <a href="lesson.html?lang=cpp&topic=exceptions" class="sidebar-link" data-topic="cpp-exceptions">Exceptions</a>
-      <a href="lesson.html?lang=cpp&topic=templates" class="sidebar-link" data-topic="cpp-templates">Templates</a>
-      <a href="lesson.html?lang=cpp&topic=lambda" class="sidebar-link" data-topic="cpp-lambda">Lambda Functions</a>
+      <a href="lesson.html?lang=cpp&topic=oop"           class="sidebar-link" data-topic="cpp-oop">Classes &amp; Objects</a>
+      <a href="lesson.html?lang=cpp&topic=stl"           class="sidebar-link" data-topic="cpp-stl">STL Containers</a>
     </div>
-    <div class="sidebar-section">
-      <div class="sidebar-section-title">C++ · Advanced</div>
-      <a href="lesson.html?lang=cpp&topic=smart-pointers" class="sidebar-link" data-topic="cpp-smart-pointers">Smart Pointers</a>
-      <a href="lesson.html?lang=cpp&topic=move-semantics" class="sidebar-link" data-topic="cpp-move-semantics">Move Semantics</a>
-      <a href="lesson.html?lang=cpp&topic=multithreading" class="sidebar-link" data-topic="cpp-multithreading">Multithreading</a>
-      <a href="lesson.html?lang=cpp&topic=dsa-sorting" class="sidebar-link" data-topic="cpp-dsa-sorting">DSA — Sorting</a>
-      <a href="lesson.html?lang=cpp&topic=dsa-trees" class="sidebar-link" data-topic="cpp-dsa-trees">DSA — Trees</a>
-      <a href="lesson.html?lang=cpp&topic=design-patterns" class="sidebar-link" data-topic="cpp-design-patterns">Design Patterns</a>
-    </div>
+
     <div class="sidebar-section">
       <div class="sidebar-section-title">Python · Basics</div>
-      <a href="lesson.html?lang=python&topic=hello-world" class="sidebar-link" data-topic="py-hello-world">Hello World</a>
-      <a href="lesson.html?lang=python&topic=variables" class="sidebar-link" data-topic="py-variables">Variables &amp; Types</a>
-      <a href="lesson.html?lang=python&topic=lists" class="sidebar-link" data-topic="py-lists">Lists &amp; Tuples</a>
-      <a href="lesson.html?lang=python&topic=dicts" class="sidebar-link" data-topic="py-dicts">Dicts &amp; Sets</a>
-      <a href="lesson.html?lang=python&topic=loops" class="sidebar-link" data-topic="py-loops">Loops</a>
-      <a href="lesson.html?lang=python&topic=functions" class="sidebar-link" data-topic="py-functions">Functions</a>
+      <a href="lesson.html?lang=python&topic=hello-world"  class="sidebar-link" data-topic="py-hello-world">Hello World</a>
+      <a href="lesson.html?lang=python&topic=variables"    class="sidebar-link" data-topic="py-variables">Variables &amp; Types</a>
+      <a href="lesson.html?lang=python&topic=operators"    class="sidebar-link" data-topic="py-operators">Operators</a>
+      <a href="lesson.html?lang=python&topic=control-flow" class="sidebar-link" data-topic="py-control-flow">Control Flow</a>
+      <a href="lesson.html?lang=python&topic=loops"        class="sidebar-link" data-topic="py-loops">Loops</a>
+      <a href="lesson.html?lang=python&topic=functions"    class="sidebar-link" data-topic="py-functions">Functions</a>
+      <a href="lesson.html?lang=python&topic=lists"        class="sidebar-link" data-topic="py-lists">Lists &amp; Tuples</a>
+      <a href="lesson.html?lang=python&topic=dicts"        class="sidebar-link" data-topic="py-dicts">Dicts &amp; Sets</a>
     </div>
+
     <div class="sidebar-section">
       <div class="sidebar-section-title">Python · Intermediate</div>
-      <a href="lesson.html?lang=python&topic=oop" class="sidebar-link" data-topic="py-oop">Classes &amp; OOP</a>
-      <a href="lesson.html?lang=python&topic=decorators" class="sidebar-link" data-topic="py-decorators">Decorators</a>
+      <a href="lesson.html?lang=python&topic=oop"            class="sidebar-link" data-topic="py-oop">Classes &amp; OOP</a>
+      <a href="lesson.html?lang=python&topic=decorators"     class="sidebar-link" data-topic="py-decorators">Decorators</a>
       <a href="lesson.html?lang=python&topic=comprehensions" class="sidebar-link" data-topic="py-comprehensions">Comprehensions</a>
-      <a href="lesson.html?lang=python&topic=file-io" class="sidebar-link" data-topic="py-file-io">File I/O</a>
+      <a href="lesson.html?lang=python&topic=file-io"        class="sidebar-link" data-topic="py-file-io">File I/O</a>
     </div>
+
   </aside>
 
-  <!-- MAIN CONTENT -->
+  <!-- ── MAIN CONTENT (dynamically rendered) ── -->
   <main class="lesson-main">
-    <div class="lesson-breadcrumb">
+
+    <div class="lesson-breadcrumb" id="lessonBreadcrumb">
       <a href="learn.html" style="color:var(--cpp-color)">C++</a>
-      <span>›</span>
-      <span>Basics</span>
-      <span>›</span>
-      <span>Pointers &amp; References</span>
+      <span>›</span><span>Loading…</span>
     </div>
 
-    <h1 class="lesson-title">Pointers &amp; References</h1>
-    <div class="lesson-meta">
-      <span class="lesson-difficulty">🟡 Basic · Lesson 8</span>
-      <span class="lesson-time">⏱ ~25 min read</span>
-      <button data-bookmark="cpp-pointers" style="margin-left:auto;font-size:0.8rem;color:var(--text-muted);border:1px solid var(--border);padding:0.3rem 0.75rem;border-radius:var(--radius-sm);background:none;cursor:pointer;transition:all var(--transition)">🔖 Bookmark</button>
+    <h1 class="lesson-title" id="lessonTitle">Loading lesson…</h1>
+
+    <div class="lesson-meta" id="lessonMeta">
+      <span class="lesson-difficulty">⏳ Loading…</span>
     </div>
 
-    <div class="lesson-body">
-      <h2>What is a Pointer?</h2>
-      <p>A <strong>pointer</strong> is a variable that stores the <em>memory address</em> of another variable. Instead of holding a data value directly, it holds the location in memory where a value lives.</p>
-      <p>Every variable in C++ occupies memory. A pointer lets you directly access and manipulate that memory — which is why C++ is so powerful for systems programming.</p>
-
-      <div class="code-block">
-        <div class="code-block-header">
-          <span class="code-block-lang">cpp</span>
-          <button class="copy-btn">Copy</button>
-        </div>
-        <pre><code class="language-cpp">int age = 25;        // normal variable — stores value 25
-int* ptr = &age;     // pointer — stores the ADDRESS of 'age'
-
-// & means "address of"
-// * means "pointer to" (in declaration)
-
-cout &lt;&lt; age;    // Output: 25       (the value)
-cout &lt;&lt; &age;   // Output: 0x7fff5 (the address — will differ)
-cout &lt;&lt; ptr;    // Output: 0x7fff5 (same address, stored in ptr)
-cout &lt;&lt; *ptr;   // Output: 25      (dereference — value AT the address)
-</code></pre>
+    <div class="lesson-body" id="lessonBody">
+      <div style="padding:3rem;text-align:center;color:var(--text-muted)">
+        <div style="font-size:2rem;margin-bottom:0.75rem">⏳</div>
+        Loading lesson content…
       </div>
+    </div>
 
-      <div class="note-box">
-        <strong>Key insight:</strong> The <code class="inline-code">*</code> symbol has two different meanings in C++:
-        In a declaration (<code class="inline-code">int* ptr</code>) it means "this is a pointer."
-        Used on an existing pointer (<code class="inline-code">*ptr</code>) it means "give me the value at this address" — this is called <em>dereferencing</em>.
-      </div>
-
-      <h2>Pointer Syntax</h2>
-      <p>Let's break down every piece of pointer syntax clearly:</p>
-
-      <div class="code-block">
-        <div class="code-block-header">
-          <span class="code-block-lang">cpp</span>
-          <button class="copy-btn">Copy</button>
-        </div>
-        <pre><code class="language-cpp">// DECLARING a pointer
-int* ptr;          // ptr can hold the address of an int
-double* dPtr;      // dPtr can hold the address of a double
-char* cPtr;        // cPtr can hold the address of a char
-
-// INITIALIZING a pointer
-int num = 42;
-int* ptr = &num;   // &num gives the address of 'num'
-
-// DEREFERENCING — reading the value
-cout &lt;&lt; *ptr;      // Prints: 42
-
-// DEREFERENCING — modifying the value
-*ptr = 100;
-cout &lt;&lt; num;       // Prints: 100 (original variable changed!)
-
-// NULL pointer (safe initialization)
-int* nullPtr = nullptr;  // Modern C++ — use nullptr, not NULL
-</code></pre>
-      </div>
-
-      <h2>Why Use Pointers?</h2>
-      <ul>
-        <li><strong>Pass large data efficiently</strong> — pass a pointer instead of copying the whole object</li>
-        <li><strong>Dynamic memory allocation</strong> — allocate memory at runtime with <code class="inline-code">new</code></li>
-        <li><strong>Data structures</strong> — linked lists, trees, and graphs are built with pointers</li>
-        <li><strong>Function out-parameters</strong> — return multiple values from a function</li>
-      </ul>
-
-      <h2>Pointer Arithmetic</h2>
-      <p>Pointers understand the size of the type they point to. Adding 1 to an <code class="inline-code">int*</code> moves the address forward by 4 bytes (size of int), not 1 byte.</p>
-
-      <div class="code-block">
-        <div class="code-block-header">
-          <span class="code-block-lang">cpp</span>
-          <button class="copy-btn">Copy</button>
-        </div>
-        <pre><code class="language-cpp">int arr[] = {10, 20, 30, 40};
-int* p = arr;        // Points to first element (arr[0])
-
-cout &lt;&lt; *p;          // 10
-cout &lt;&lt; *(p + 1);    // 20 — moves 4 bytes forward
-cout &lt;&lt; *(p + 2);    // 30
-cout &lt;&lt; *(p + 3);    // 40
-
-// Incrementing the pointer
-p++;                  // now points to arr[1]
-cout &lt;&lt; *p;          // 20
-</code></pre>
-      </div>
-
-      <h2>References — A Safer Alternative</h2>
-      <p>A <strong>reference</strong> is an alias for an existing variable. Unlike a pointer, a reference:</p>
-      <ul>
-        <li>Must be initialized when declared</li>
-        <li>Cannot be reassigned to refer to a different variable</li>
-        <li>Cannot be null</li>
-        <li>Has cleaner syntax — no need to dereference with <code class="inline-code">*</code></li>
-      </ul>
-
-      <div class="code-block">
-        <div class="code-block-header">
-          <span class="code-block-lang">cpp</span>
-          <button class="copy-btn">Copy</button>
-        </div>
-        <pre><code class="language-cpp">int x = 10;
-int&amp; ref = x;    // ref is an alias for x
-
-cout &lt;&lt; ref;     // 10 — same as cout &lt;&lt; x
-ref = 50;        // modifying ref modifies x
-cout &lt;&lt; x;       // 50
-
-// Common use: pass by reference in functions
-void doubleIt(int&amp; val) {
-    val *= 2;     // modifies the original variable
-}
-
-int n = 7;
-doubleIt(n);
-cout &lt;&lt; n;       // 14
-</code></pre>
-      </div>
-
-      <h2>Pointers vs References — When to Use Which</h2>
-      <div class="code-block">
-        <div class="code-block-header">
-          <span class="code-block-lang">cpp</span>
-          <button class="copy-btn">Copy</button>
-        </div>
-        <pre><code class="language-cpp">// Use REFERENCE when:
-// - The parameter should not be null
-// - You won't reassign to point elsewhere
-void increment(int&amp; val) { val++; }
-
-// Use POINTER when:
-// - The value might be nullptr (optional parameter)
-// - You need to reassign to point to different memory
-// - Working with arrays or dynamic memory
-void process(int* arr, int size) {
-    for (int i = 0; i &lt; size; i++)
-        arr[i] *= 2;
-}
-</code></pre>
-      </div>
-
-      <div class="warning-box">
-        <strong>⚠️ Dangling Pointers:</strong> A dangling pointer points to memory that has been freed or gone out of scope. Always set pointers to <code class="inline-code">nullptr</code> after deleting them, and use <strong>smart pointers</strong> (covered in Advanced) to avoid this entirely.
-      </div>
-
-      <h2>Practice Exercise</h2>
-      <p>Try writing a function that swaps two integers using pointers (not references). Open the editor on the right and give it a shot!</p>
-
-      <div class="code-block">
-        <div class="code-block-header">
-          <span class="code-block-lang">cpp</span>
-          <button class="copy-btn">Copy</button>
-        </div>
-        <pre><code class="language-cpp">// Starter code — complete the swap function
-#include &lt;iostream&gt;
-using namespace std;
-
-void swap(int* a, int* b) {
-    // YOUR CODE HERE
-    // Hint: you need a temporary variable
-}
-
-int main() {
-    int x = 5, y = 10;
-    swap(&x, &y);
-    cout &lt;&lt; "x = " &lt;&lt; x &lt;&lt; ", y = " &lt;&lt; y &lt;&lt; endl;
-    // Expected: x = 10, y = 5
-    return 0;
-}
-</code></pre>
-      </div>
-
-    </div><!-- end lesson-body -->
-
-    <!-- LESSON NAVIGATION -->
+    <!-- Lesson navigation -->
     <div class="lesson-nav">
-      <a href="lesson.html?prev" class="lesson-nav-btn">← Arrays &amp; Strings</a>
-      <a href="quiz.html" class="btn btn-outline" style="padding:0.6rem 1.1rem;font-size:0.875rem">🧠 Test Your Knowledge</a>
-      <a href="lesson.html?next" class="lesson-nav-btn next">Control Flow →</a>
+      <a id="prevBtn" href="#" class="lesson-nav-btn" style="visibility:hidden">← Previous</a>
+      <a href="quiz.html" class="btn btn-outline" style="padding:0.6rem 1.1rem;font-size:0.875rem">🧠 Take Quiz</a>
+      <a id="nextBtn" href="#" class="lesson-nav-btn next">Next →</a>
     </div>
+
   </main>
 
-  <!-- CODE EDITOR PANEL -->
+  <!-- ── CODE EDITOR PANEL ── -->
   <aside class="editor-panel">
     <div class="editor-header">
       <span class="editor-title">💻 Live Editor</span>
@@ -321,7 +148,7 @@ int main() {
     </div>
   </aside>
 
-</div>
+</div><!-- end lesson-layout -->
 
 </body>
 </html>
