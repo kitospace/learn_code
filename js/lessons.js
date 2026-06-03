@@ -1455,6 +1455,1773 @@ with Timer():
 };
 
 /* ════════════════════════════════════════
+   ADDITIONAL LESSONS (C++ & Python)
+   ════════════════════════════════════════ */
+Object.assign(LESSONS, {
+
+  /* ── C++ Intermediate ── */
+
+  'cpp-inheritance': {
+    lang:'cpp', title:'Inheritance & Polymorphism', level:'Intermediate', time:'35 min',
+    prev:'cpp-oop', next:'cpp-stl',
+    editorLang:'cpp',
+    editorCode:`#include <iostream>
+using namespace std;
+
+class Shape {
+public:
+    virtual double area() = 0;   // pure virtual
+    virtual void describe() {
+        cout << "Area: " << area() << endl;
+    }
+};
+
+class Circle : public Shape {
+    double r;
+public:
+    Circle(double r) : r(r) {}
+    double area() override { return 3.14159 * r * r; }
+};
+
+class Rectangle : public Shape {
+    double w, h;
+public:
+    Rectangle(double w, double h) : w(w), h(h) {}
+    double area() override { return w * h; }
+};
+
+int main() {
+    Shape* shapes[] = { new Circle(5), new Rectangle(4, 6) };
+    for (auto s : shapes) { s->describe(); delete s; }
+}`,
+    body:`
+<h2>Inheritance</h2>
+<p>Inheritance lets a class <strong>reuse and extend</strong> another class. The child class gets all public/protected members of the parent.</p>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">class Animal {
+public:
+    string name;
+    Animal(string n) : name(n) {}
+    virtual void speak() { cout &lt;&lt; "..."; }
+};
+
+class Dog : public Animal {
+public:
+    Dog(string n) : Animal(n) {}         // call parent constructor
+    void speak() override {              // override parent method
+        cout &lt;&lt; name &lt;&lt; ": Woof!\n";
+    }
+};
+
+class Cat : public Animal {
+public:
+    Cat(string n) : Animal(n) {}
+    void speak() override { cout &lt;&lt; name &lt;&lt; ": Meow!\n"; }
+};</code></pre></div>
+<h2>Polymorphism</h2>
+<p>A parent pointer can point to any child object. The correct <code class="inline-code">speak()</code> is called at <strong>runtime</strong> — this is polymorphism.</p>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">Animal* animals[] = { new Dog("Rex"), new Cat("Whiskers") };
+for (Animal* a : animals) {
+    a->speak();      // calls the RIGHT speak() at runtime
+    delete a;
+}
+// Output:
+// Rex: Woof!
+// Whiskers: Meow!</code></pre></div>
+<h2>Abstract Classes</h2>
+<p>A class with at least one <strong>pure virtual function</strong> (<code class="inline-code">= 0</code>) cannot be instantiated — it's a blueprint.</p>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">class Shape {
+public:
+    virtual double area() = 0;      // pure virtual — must override
+    virtual ~Shape() {}             // virtual destructor (always add!)
+};
+
+class Circle : public Shape {
+    double r;
+public:
+    Circle(double r) : r(r) {}
+    double area() override { return 3.14159 * r * r; }
+};
+
+// Shape s;  // ERROR — cannot instantiate abstract class
+Shape* s = new Circle(5);          // OK — Circle is concrete</code></pre></div>
+<div class="note-box"><strong>Rule:</strong> Always declare the destructor <code class="inline-code">virtual</code> in a base class. Without it, deleting a derived object through a base pointer causes undefined behaviour.</div>
+<h2>Access in Inheritance</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">class Base {
+public:    int pub = 1;    // accessible everywhere
+protected: int prot = 2;   // accessible in Base + subclasses
+private:   int priv = 3;   // accessible ONLY in Base
+};
+
+class Child : public Base {
+    void test() {
+        pub  = 10;   // OK
+        prot = 20;   // OK
+        // priv = 30; ERROR
+    }
+};</code></pre></div>`
+  },
+
+  'cpp-exceptions': {
+    lang:'cpp', title:'Exception Handling', level:'Intermediate', time:'22 min',
+    prev:'cpp-stl', next:'cpp-file-io',
+    editorLang:'cpp',
+    editorCode:`#include <iostream>
+#include <stdexcept>
+using namespace std;
+
+double divide(double a, double b) {
+    if (b == 0)
+        throw runtime_error("Division by zero!");
+    return a / b;
+}
+
+int main() {
+    try {
+        cout << divide(10, 2) << endl;   // OK
+        cout << divide(5, 0) << endl;    // throws
+    }
+    catch (const runtime_error& e) {
+        cout << "Caught: " << e.what() << endl;
+    }
+    catch (...) {
+        cout << "Unknown error" << endl;
+    }
+    cout << "Program continues..." << endl;
+}`,
+    body:`
+<h2>try / catch / throw</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">try {
+    // code that might throw
+    throw runtime_error("Something went wrong");
+}
+catch (const runtime_error& e) {
+    cout &lt;&lt; "Runtime error: " &lt;&lt; e.what();
+}
+catch (const exception& e) {
+    cout &lt;&lt; "Exception: " &lt;&lt; e.what();
+}
+catch (...) {
+    cout &lt;&lt; "Unknown exception";
+}</code></pre></div>
+<h2>Standard Exception Hierarchy</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">#include &lt;stdexcept&gt;
+
+throw runtime_error("bad state");
+throw invalid_argument("bad input");
+throw out_of_range("index out of bounds");
+throw logic_error("program logic error");
+throw overflow_error("arithmetic overflow");</code></pre></div>
+<h2>Custom Exceptions</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">class ValidationError : public runtime_error {
+    int code;
+public:
+    ValidationError(const string& msg, int c)
+        : runtime_error(msg), code(c) {}
+    int getCode() const { return code; }
+};
+
+try {
+    throw ValidationError("Invalid age", 400);
+}
+catch (const ValidationError& e) {
+    cout &lt;&lt; e.what() &lt;&lt; " (code " &lt;&lt; e.getCode() &lt;&lt; ")\n";
+}</code></pre></div>
+<h2>RAII — Resource Safety</h2>
+<p>C++ uses RAII (Resource Acquisition Is Initialization) — resources are tied to object lifetimes, so destructors always clean up even when exceptions are thrown.</p>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">// Smart pointers are RAII in action
+{
+    auto ptr = make_unique&lt;int&gt;(42); // allocated
+    throw runtime_error("oops");
+}   // ptr destroyed here — memory freed automatically
+    // even though an exception was thrown</code></pre></div>
+<div class="warning-box"><strong>⚠️ Never throw from a destructor.</strong> If a destructor throws while an exception is already propagating, <code class="inline-code">std::terminate()</code> is called.</div>`
+  },
+
+  'cpp-file-io': {
+    lang:'cpp', title:'File I/O', level:'Intermediate', time:'20 min',
+    prev:'cpp-exceptions', next:'cpp-templates',
+    editorLang:'cpp',
+    editorCode:`#include <iostream>
+#include <fstream>
+#include <string>
+using namespace std;
+
+int main() {
+    // Write to file
+    ofstream out("notes.txt");
+    out << "Hello from C++!" << endl;
+    out << "Line 2" << endl;
+    out.close();
+
+    // Read back line by line
+    ifstream in("notes.txt");
+    string line;
+    while (getline(in, line)) {
+        cout << line << endl;
+    }
+    in.close();
+    return 0;
+}`,
+    body:`
+<h2>Writing to a File</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">#include &lt;fstream&gt;
+
+ofstream file("output.txt");       // creates/overwrites
+if (!file) { cerr &lt;&lt; "Can't open!"; return 1; }
+
+file &lt;&lt; "Hello, File!" &lt;&lt; endl;
+file &lt;&lt; 42 &lt;&lt; " " &lt;&lt; 3.14 &lt;&lt; endl;
+file.close();
+
+// Append mode
+ofstream log("log.txt", ios::app);
+log &lt;&lt; "New entry\n";
+log.close();</code></pre></div>
+<h2>Reading from a File</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">ifstream file("data.txt");
+string line;
+
+// Read line by line
+while (getline(file, line)) {
+    cout &lt;&lt; line &lt;&lt; "\n";
+}
+
+// Read word by word
+int num;
+while (file &gt;&gt; num) {
+    cout &lt;&lt; num &lt;&lt; " ";
+}
+
+// Read entire file at once
+string content((istreambuf_iterator&lt;char&gt;(file)),
+                istreambuf_iterator&lt;char&gt;());</code></pre></div>
+<h2>fstream — Both Read & Write</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">fstream f("data.txt", ios::in | ios::out | ios::trunc);
+
+f &lt;&lt; "hello";         // write
+f.seekg(0);           // seek to start
+string word;
+f &gt;&gt; word;            // read back: "hello"</code></pre></div>
+<h2>String Streams</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">#include &lt;sstream&gt;
+
+// Parse a CSV line
+string csv = "Alice,25,90.5";
+stringstream ss(csv);
+string name; int age; double score;
+getline(ss, name, ',');
+ss &gt;&gt; age;
+ss.ignore();    // skip comma
+ss &gt;&gt; score;
+
+cout &lt;&lt; name &lt;&lt; " " &lt;&lt; age &lt;&lt; " " &lt;&lt; score;</code></pre></div>`
+  },
+
+  'cpp-templates': {
+    lang:'cpp', title:'Templates & Generics', level:'Intermediate', time:'28 min',
+    prev:'cpp-file-io', next:'cpp-lambda',
+    editorLang:'cpp',
+    editorCode:`#include <iostream>
+#include <vector>
+using namespace std;
+
+// Generic function template
+template<typename T>
+T maxOf(T a, T b) { return (a > b) ? a : b; }
+
+// Generic class template
+template<typename T>
+class Stack {
+    vector<T> data;
+public:
+    void push(T val) { data.push_back(val); }
+    T pop() { T v = data.back(); data.pop_back(); return v; }
+    bool empty() { return data.empty(); }
+};
+
+int main() {
+    cout << maxOf(3, 7) << endl;         // int
+    cout << maxOf(3.14, 2.71) << endl;   // double
+    cout << maxOf(string("apple"), string("banana")) << endl;
+
+    Stack<int> s;
+    s.push(10); s.push(20); s.push(30);
+    while (!s.empty()) cout << s.pop() << " ";
+}`,
+    body:`
+<h2>Function Templates</h2>
+<p>Templates let you write code that works for <strong>any type</strong> — the compiler generates the specific version when you call it.</p>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">template&lt;typename T&gt;
+T add(T a, T b) { return a + b; }
+
+add(3, 4);           // T = int → 7
+add(1.5, 2.5);       // T = double → 4.0
+add(string("Hi"), string("!")); // T = string → "Hi!"
+
+// Multiple type params
+template&lt;typename T, typename U&gt;
+auto mix(T a, U b) { return a + b; }</code></pre></div>
+<h2>Class Templates</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">template&lt;typename T&gt;
+class Pair {
+public:
+    T first, second;
+    Pair(T a, T b) : first(a), second(b) {}
+    T larger() { return (first &gt; second) ? first : second; }
+};
+
+Pair&lt;int&gt;    p1(3, 7);
+Pair&lt;string&gt; p2("apple", "zebra");
+cout &lt;&lt; p1.larger();   // 7
+cout &lt;&lt; p2.larger();   // "zebra"</code></pre></div>
+<h2>Template Specialization</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">// Generic version
+template&lt;typename T&gt;
+void print(T val) { cout &lt;&lt; val; }
+
+// Specialization for bool
+template&lt;&gt;
+void print&lt;bool&gt;(bool val) {
+    cout &lt;&lt; (val ? "true" : "false");  // custom behaviour
+}
+
+print(42);     // "42"
+print(true);   // "true"  ← uses specialization</code></pre></div>
+<h2>Non-Type Template Parameters</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">template&lt;typename T, int SIZE&gt;
+class Array {
+    T data[SIZE];
+public:
+    T& operator[](int i) { return data[i]; }
+    int size() { return SIZE; }
+};
+
+Array&lt;int, 5&gt; arr;
+arr[0] = 10;</code></pre></div>`
+  },
+
+  'cpp-lambda': {
+    lang:'cpp', title:'Lambda Functions', level:'Intermediate', time:'24 min',
+    prev:'cpp-templates', next:'cpp-smart-pointers',
+    editorLang:'cpp',
+    editorCode:`#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int main() {
+    vector<int> nums = {5, 2, 8, 1, 9, 3, 7};
+
+    // Sort ascending
+    sort(nums.begin(), nums.end());
+
+    // Filter: keep only evens
+    vector<int> evens;
+    copy_if(nums.begin(), nums.end(), back_inserter(evens),
+            [](int x) { return x % 2 == 0; });
+
+    // Transform: square each
+    vector<int> squares;
+    transform(evens.begin(), evens.end(), back_inserter(squares),
+              [](int x) { return x * x; });
+
+    for (int n : squares) cout << n << " ";
+    cout << endl;
+    return 0;
+}`,
+    body:`
+<h2>Lambda Syntax</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">// [capture](params) -> return_type { body }
+
+auto greet = []() { cout &lt;&lt; "Hello!\n"; };
+greet();
+
+auto add = [](int a, int b) { return a + b; };
+cout &lt;&lt; add(3, 4);   // 7
+
+auto square = [](int x) -&gt; int { return x * x; };
+cout &lt;&lt; square(5);   // 25</code></pre></div>
+<h2>Capture Lists</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">int x = 10, y = 20;
+
+// Capture by value (copy)
+auto f1 = [x, y]() { cout &lt;&lt; x + y; };   // captures copies of x, y
+
+// Capture by reference
+auto f2 = [&x]() { x++; };     // modifies original x
+
+// Capture all by value
+auto f3 = [=]() { cout &lt;&lt; x * y; };
+
+// Capture all by reference
+auto f4 = [&]() { x = 0; y = 0; };
+
+// Mixed
+auto f5 = [=, &x]() { x = y; }; // x by ref, y by value</code></pre></div>
+<h2>Lambdas with STL Algorithms</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">vector&lt;int&gt; v = {3, 1, 4, 1, 5, 9, 2, 6};
+
+// Sort descending
+sort(v.begin(), v.end(), [](int a, int b) { return a &gt; b; });
+
+// Find first element &gt; 5
+auto it = find_if(v.begin(), v.end(), [](int x) { return x &gt; 5; });
+
+// Remove if even
+v.erase(remove_if(v.begin(), v.end(), [](int x) { return x%2==0; }), v.end());
+
+// Count elements satisfying condition
+int n = count_if(v.begin(), v.end(), [](int x) { return x &gt; 3; });</code></pre></div>
+<h2>std::function</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">#include &lt;functional&gt;
+
+function&lt;int(int, int)&gt; op;
+
+op = [](int a, int b) { return a + b; };
+cout &lt;&lt; op(3, 4);   // 7
+
+op = [](int a, int b) { return a * b; };
+cout &lt;&lt; op(3, 4);   // 12</code></pre></div>`
+  },
+
+  'cpp-smart-pointers': {
+    lang:'cpp', title:'Smart Pointers', level:'Advanced', time:'30 min',
+    prev:'cpp-lambda', next:'cpp-move-semantics',
+    editorLang:'cpp',
+    editorCode:`#include <iostream>
+#include <memory>
+using namespace std;
+
+class Node {
+public:
+    int val;
+    shared_ptr<Node> next;
+    Node(int v) : val(v), next(nullptr) {
+        cout << "Node " << v << " created\n";
+    }
+    ~Node() { cout << "Node " << val << " destroyed\n"; }
+};
+
+int main() {
+    // unique_ptr: sole ownership
+    auto p1 = make_unique<int>(42);
+    cout << *p1 << endl;
+
+    // shared_ptr: shared ownership
+    auto n1 = make_shared<Node>(10);
+    auto n2 = make_shared<Node>(20);
+    n1->next = n2;
+
+    cout << "ref count n2: " << n2.use_count() << endl;  // 2
+    return 0;
+    // All nodes destroyed automatically here
+}`,
+    body:`
+<h2>Why Smart Pointers?</h2>
+<p>Raw pointers require manual <code class="inline-code">delete</code> — forget it once and you have a memory leak. Smart pointers destroy their resource automatically when they go out of scope.</p>
+<h2>unique_ptr — Sole Ownership</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">#include &lt;memory&gt;
+
+auto p = make_unique&lt;int&gt;(42);    // allocates int on heap
+cout &lt;&lt; *p;                       // 42
+// p auto-deletes when it leaves scope
+
+auto dog = make_unique&lt;Dog&gt;("Rex");
+dog-&gt;speak();
+
+// Transfer ownership (can't copy unique_ptr)
+auto p2 = move(p);   // p is now null, p2 owns the int</code></pre></div>
+<h2>shared_ptr — Shared Ownership</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">auto sp1 = make_shared&lt;string&gt;("hello");
+auto sp2 = sp1;   // both own the same object
+auto sp3 = sp1;   // three owners
+
+cout &lt;&lt; sp1.use_count();  // 3
+sp2.reset();              // sp2 releases ownership
+cout &lt;&lt; sp1.use_count();  // 2
+// object deleted when last shared_ptr goes out of scope</code></pre></div>
+<h2>weak_ptr — Non-Owning Reference</h2>
+<p>Use <code class="inline-code">weak_ptr</code> to break circular references that would prevent shared_ptr from ever reaching 0.</p>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">auto sp = make_shared&lt;int&gt;(100);
+weak_ptr&lt;int&gt; wp = sp;    // doesn't increase ref count
+
+// Must lock() to safely access
+if (auto locked = wp.lock()) {
+    cout &lt;&lt; *locked;       // 100
+} else {
+    cout &lt;&lt; "Object gone";
+}</code></pre></div>
+<div class="note-box"><strong>Rule of thumb:</strong> Use <code class="inline-code">unique_ptr</code> by default. Use <code class="inline-code">shared_ptr</code> only when ownership truly needs to be shared. Use <code class="inline-code">weak_ptr</code> to observe without owning.</div>`
+  },
+
+  'cpp-move-semantics': {
+    lang:'cpp', title:'Move Semantics & Rvalue References', level:'Advanced', time:'35 min',
+    prev:'cpp-smart-pointers', next:'cpp-multithreading',
+    editorLang:'cpp',
+    editorCode:`#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+class Buffer {
+    string name;
+    int* data;
+    size_t size;
+public:
+    Buffer(string n, size_t s) : name(n), size(s), data(new int[s]) {
+        cout << name << " constructed\n";
+    }
+    // Move constructor
+    Buffer(Buffer&& other) noexcept
+        : name(move(other.name)), size(other.size), data(other.data) {
+        other.data = nullptr;
+        other.size = 0;
+        cout << name << " moved\n";
+    }
+    ~Buffer() { delete[] data; cout << name << " destroyed\n"; }
+};
+
+int main() {
+    Buffer b1("buf1", 100);
+    Buffer b2(move(b1));     // move, don't copy
+    // b1.data is now null — safe
+    return 0;
+}`,
+    body:`
+<h2>Lvalues and Rvalues</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">int x = 10;    // x is an lvalue (has a name, has an address)
+               // 10 is an rvalue (temporary, no address)
+
+int& ref = x;  // lvalue reference — binds to x
+// int& r = 10; ERROR — can't bind lvalue ref to rvalue
+
+int&& rref = 10;  // rvalue reference — binds to temporary</code></pre></div>
+<h2>std::move</h2>
+<p><code class="inline-code">std::move</code> casts an lvalue to an rvalue — it says "I'm done with this, you can take its guts."</p>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">vector&lt;string&gt; src = {"hello", "world", "cpp"};
+vector&lt;string&gt; dst = move(src);   // O(1) — just moves pointer
+// src is now empty — its contents were "stolen"
+cout &lt;&lt; src.size();   // 0
+cout &lt;&lt; dst.size();   // 3</code></pre></div>
+<h2>Move Constructor & Assignment</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">class MyVec {
+    int* data;
+    size_t size;
+public:
+    // Move constructor — steal resources
+    MyVec(MyVec&& other) noexcept
+        : data(other.data), size(other.size) {
+        other.data = nullptr;   // leave source in valid state
+        other.size = 0;
+    }
+    // Move assignment
+    MyVec& operator=(MyVec&& other) noexcept {
+        if (this != &other) {
+            delete[] data;
+            data = other.data;
+            size = other.size;
+            other.data = nullptr;
+        }
+        return *this;
+    }
+};</code></pre></div>
+<div class="note-box"><strong>Performance:</strong> Move is O(1) — it just transfers ownership of the underlying resource. Copy is O(n) — it duplicates every element. For large containers, move is dramatically faster.</div>`
+  },
+
+  'cpp-multithreading': {
+    lang:'cpp', title:'Multithreading', level:'Advanced', time:'45 min',
+    prev:'cpp-move-semantics', next:'cpp-dsa-sorting',
+    editorLang:'cpp',
+    editorCode:`#include <iostream>
+#include <thread>
+#include <mutex>
+#include <vector>
+using namespace std;
+
+mutex mtx;
+int counter = 0;
+
+void increment(int n, const string& name) {
+    for (int i = 0; i < n; i++) {
+        lock_guard<mutex> lock(mtx);  // auto-unlocks on scope exit
+        counter++;
+    }
+    cout << name << " done\n";
+}
+
+int main() {
+    thread t1(increment, 1000, "Thread-1");
+    thread t2(increment, 1000, "Thread-2");
+    t1.join();
+    t2.join();
+    cout << "Final counter: " << counter << endl;  // always 2000
+    return 0;
+}`,
+    body:`
+<h2>Creating Threads</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">#include &lt;thread&gt;
+
+void task(int id) {
+    cout &lt;&lt; "Thread " &lt;&lt; id &lt;&lt; " running\n";
+}
+
+thread t1(task, 1);
+thread t2(task, 2);
+
+t1.join();   // wait for t1 to finish
+t2.join();   // wait for t2 to finish
+
+// Lambda thread
+thread t3([]() { cout &lt;&lt; "Lambda thread\n"; });
+t3.join();</code></pre></div>
+<h2>Mutex — Preventing Data Races</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">#include &lt;mutex&gt;
+mutex mtx;
+int shared = 0;
+
+void safe_increment() {
+    lock_guard&lt;mutex&gt; lock(mtx);  // locks on construction
+    shared++;
+}   // lock released automatically here (RAII)
+
+// unique_lock — more flexible
+void conditional_update() {
+    unique_lock&lt;mutex&gt; lock(mtx);
+    shared++;
+    lock.unlock();    // manually unlock early
+    // do non-shared work
+}</code></pre></div>
+<h2>async & future</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">#include &lt;future&gt;
+
+// Run in background, get result later
+future&lt;int&gt; result = async(launch::async, []() {
+    return 6 * 7;
+});
+
+// Do other work here...
+
+cout &lt;&lt; result.get();   // blocks until ready → 42</code></pre></div>
+<div class="warning-box"><strong>⚠️ Data Race:</strong> Two threads accessing the same data concurrently without synchronisation is undefined behaviour. Always use a mutex, atomic, or other synchronisation primitive.</div>`
+  },
+
+  'cpp-dsa-sorting': {
+    lang:'cpp', title:'DSA — Sorting Algorithms', level:'Advanced', time:'50 min',
+    prev:'cpp-multithreading', next:'cpp-dsa-trees',
+    editorLang:'cpp',
+    editorCode:`#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+void mergeSort(vector<int>& arr, int l, int r) {
+    if (l >= r) return;
+    int mid = (l + r) / 2;
+    mergeSort(arr, l, mid);
+    mergeSort(arr, mid + 1, r);
+    vector<int> temp;
+    int i = l, j = mid + 1;
+    while (i <= mid && j <= r)
+        temp.push_back(arr[i] <= arr[j] ? arr[i++] : arr[j++]);
+    while (i <= mid) temp.push_back(arr[i++]);
+    while (j <= r)   temp.push_back(arr[j++]);
+    for (int k = l; k <= r; k++) arr[k] = temp[k - l];
+}
+
+int main() {
+    vector<int> v = {64, 34, 25, 12, 22, 11, 90};
+    mergeSort(v, 0, v.size() - 1);
+    for (int x : v) cout << x << " ";
+}`,
+    body:`
+<h2>Bubble Sort — O(n²)</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">void bubbleSort(vector&lt;int&gt;& arr) {
+    int n = arr.size();
+    for (int i = 0; i &lt; n - 1; i++) {
+        bool swapped = false;
+        for (int j = 0; j &lt; n - i - 1; j++) {
+            if (arr[j] &gt; arr[j+1]) {
+                swap(arr[j], arr[j+1]);
+                swapped = true;
+            }
+        }
+        if (!swapped) break;   // already sorted
+    }
+}</code></pre></div>
+<h2>Merge Sort — O(n log n)</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">void merge(vector&lt;int&gt;& arr, int l, int mid, int r) {
+    vector&lt;int&gt; left(arr.begin()+l, arr.begin()+mid+1);
+    vector&lt;int&gt; right(arr.begin()+mid+1, arr.begin()+r+1);
+    int i=0, j=0, k=l;
+    while (i &lt; left.size() &amp;&amp; j &lt; right.size())
+        arr[k++] = (left[i] &lt;= right[j]) ? left[i++] : right[j++];
+    while (i &lt; left.size())  arr[k++] = left[i++];
+    while (j &lt; right.size()) arr[k++] = right[j++];
+}
+
+void mergeSort(vector&lt;int&gt;& arr, int l, int r) {
+    if (l &lt; r) {
+        int mid = (l + r) / 2;
+        mergeSort(arr, l, mid);
+        mergeSort(arr, mid+1, r);
+        merge(arr, l, mid, r);
+    }
+}</code></pre></div>
+<h2>Quick Sort — O(n log n) avg</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">int partition(vector&lt;int&gt;& arr, int low, int high) {
+    int pivot = arr[high];
+    int i = low - 1;
+    for (int j = low; j &lt; high; j++)
+        if (arr[j] &lt; pivot) swap(arr[++i], arr[j]);
+    swap(arr[i+1], arr[high]);
+    return i + 1;
+}
+
+void quickSort(vector&lt;int&gt;& arr, int low, int high) {
+    if (low &lt; high) {
+        int pi = partition(arr, low, high);
+        quickSort(arr, low, pi - 1);
+        quickSort(arr, pi + 1, high);
+    }
+}</code></pre></div>
+<h2>STL sort — use in practice</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">sort(v.begin(), v.end());                     // ascending
+sort(v.begin(), v.end(), greater&lt;int&gt;());     // descending
+sort(v.begin(), v.end(), [](int a, int b) {   // custom
+    return abs(a) &lt; abs(b);
+});</code></pre></div>`
+  },
+
+  'cpp-dsa-trees': {
+    lang:'cpp', title:'DSA — Trees & Graphs', level:'Advanced', time:'60 min',
+    prev:'cpp-dsa-sorting', next:'cpp-design-patterns',
+    editorLang:'cpp',
+    editorCode:`#include <iostream>
+using namespace std;
+
+struct Node {
+    int val;
+    Node *left, *right;
+    Node(int v) : val(v), left(nullptr), right(nullptr) {}
+};
+
+Node* insert(Node* root, int val) {
+    if (!root) return new Node(val);
+    if (val < root->val) root->left  = insert(root->left, val);
+    else                 root->right = insert(root->right, val);
+    return root;
+}
+
+void inorder(Node* root) {
+    if (!root) return;
+    inorder(root->left);
+    cout << root->val << " ";
+    inorder(root->right);
+}
+
+int main() {
+    Node* root = nullptr;
+    for (int v : {5, 3, 7, 1, 4, 6, 8})
+        root = insert(root, v);
+    inorder(root);  // 1 3 4 5 6 7 8 (sorted!)
+}`,
+    body:`
+<h2>Binary Search Tree (BST)</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">struct Node {
+    int val;
+    Node *left, *right;
+    Node(int v) : val(v), left(nullptr), right(nullptr) {}
+};
+
+Node* insert(Node* root, int val) {
+    if (!root) return new Node(val);
+    if (val &lt; root->val) root->left  = insert(root->left, val);
+    else                 root->right = insert(root->right, val);
+    return root;
+}
+
+bool search(Node* root, int val) {
+    if (!root) return false;
+    if (val == root->val) return true;
+    return val &lt; root->val ? search(root->left, val)
+                           : search(root->right, val);
+}</code></pre></div>
+<h2>Tree Traversals</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">void inorder(Node* n)  { if(n){ inorder(n->left); cout&lt;&lt;n->val&lt;&lt;" "; inorder(n->right);  } }
+void preorder(Node* n) { if(n){ cout&lt;&lt;n->val&lt;&lt;" "; preorder(n->left); preorder(n->right); } }
+void postorder(Node* n){ if(n){ postorder(n->left); postorder(n->right); cout&lt;&lt;n->val&lt;&lt;" "; } }
+
+// BFS — level by level
+#include &lt;queue&gt;
+void bfs(Node* root) {
+    if (!root) return;
+    queue&lt;Node*&gt; q;
+    q.push(root);
+    while (!q.empty()) {
+        Node* cur = q.front(); q.pop();
+        cout &lt;&lt; cur->val &lt;&lt; " ";
+        if (cur->left)  q.push(cur->left);
+        if (cur->right) q.push(cur->right);
+    }
+}</code></pre></div>
+<h2>Graph — Adjacency List + DFS/BFS</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;queue&gt;
+int N = 6;
+vector&lt;vector&lt;int&gt;&gt; adj(N);
+
+void addEdge(int u, int v) { adj[u].push_back(v); adj[v].push_back(u); }
+
+void dfs(int node, vector&lt;bool&gt;& visited) {
+    visited[node] = true;
+    cout &lt;&lt; node &lt;&lt; " ";
+    for (int nb : adj[node])
+        if (!visited[nb]) dfs(nb, visited);
+}
+
+void bfsGraph(int start) {
+    vector&lt;bool&gt; visited(N, false);
+    queue&lt;int&gt; q;
+    q.push(start); visited[start] = true;
+    while (!q.empty()) {
+        int cur = q.front(); q.pop();
+        cout &lt;&lt; cur &lt;&lt; " ";
+        for (int nb : adj[cur])
+            if (!visited[nb]) { visited[nb]=true; q.push(nb); }
+    }
+}</code></pre></div>`
+  },
+
+  'cpp-design-patterns': {
+    lang:'cpp', title:'Design Patterns', level:'Advanced', time:'55 min',
+    prev:'cpp-dsa-trees', next:null,
+    editorLang:'cpp',
+    editorCode:`#include <iostream>
+#include <memory>
+#include <vector>
+#include <functional>
+using namespace std;
+
+// Observer Pattern
+class EventEmitter {
+    vector<function<void(string)>> listeners;
+public:
+    void on(function<void(string)> cb) { listeners.push_back(cb); }
+    void emit(string event) {
+        for (auto& cb : listeners) cb(event);
+    }
+};
+
+int main() {
+    EventEmitter btn;
+    btn.on([](string e) { cout << "Handler 1: " << e << endl; });
+    btn.on([](string e) { cout << "Handler 2: " << e << endl; });
+    btn.emit("click");
+    btn.emit("hover");
+}`,
+    body:`
+<h2>Singleton Pattern</h2>
+<p>Ensures only one instance of a class ever exists.</p>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">class Config {
+    Config() {}                            // private constructor
+    Config(const Config&) = delete;        // no copy
+    Config& operator=(const Config&) = delete;
+public:
+    static Config& instance() {
+        static Config inst;                // created once, thread-safe (C++11)
+        return inst;
+    }
+    string getValue(string key) { return "value"; }
+};
+
+Config::instance().getValue("theme");     // always the same object</code></pre></div>
+<h2>Factory Pattern</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">class Animal { public: virtual void speak() = 0; };
+class Dog : public Animal { public: void speak() override { cout &lt;&lt; "Woof\n"; } };
+class Cat : public Animal { public: void speak() override { cout &lt;&lt; "Meow\n"; } };
+
+unique_ptr&lt;Animal&gt; create(string type) {
+    if (type == "dog") return make_unique&lt;Dog&gt;();
+    if (type == "cat") return make_unique&lt;Cat&gt;();
+    return nullptr;
+}
+
+auto a = create("dog");
+a-&gt;speak();   // Woof</code></pre></div>
+<h2>Observer Pattern</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">class Subject {
+    vector&lt;function&lt;void(int)&gt;&gt; observers;
+    int state = 0;
+public:
+    void subscribe(function&lt;void(int)&gt; cb) { observers.push_back(cb); }
+    void setState(int s) {
+        state = s;
+        for (auto& cb : observers) cb(state);  // notify all
+    }
+};
+
+Subject s;
+s.subscribe([](int v){ cout &lt;&lt; "Observer A: " &lt;&lt; v &lt;&lt; "\n"; });
+s.subscribe([](int v){ cout &lt;&lt; "Observer B: " &lt;&lt; v &lt;&lt; "\n"; });
+s.setState(42);</code></pre></div>
+<h2>Strategy Pattern</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">cpp</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-cpp">class Sorter {
+    function&lt;bool(int,int)&gt; strategy;
+public:
+    Sorter(function&lt;bool(int,int)&gt; s) : strategy(s) {}
+    void sort(vector&lt;int&gt;& v) {
+        std::sort(v.begin(), v.end(), strategy);
+    }
+};
+
+Sorter asc( [](int a, int b){ return a &lt; b; });
+Sorter desc([](int a, int b){ return a &gt; b; });
+
+vector&lt;int&gt; v = {3,1,4,1,5};
+asc.sort(v);   // {1,1,3,4,5}
+desc.sort(v);  // {5,4,3,1,1}</code></pre></div>`
+  },
+
+  /* ── Python Intermediate / Advanced ── */
+
+  'py-modules': {
+    lang:'python', title:'Modules & Packages', level:'Intermediate', time:'20 min',
+    prev:'py-comprehensions', next:'py-exceptions',
+    editorLang:'python',
+    editorCode:`import math
+import random
+from datetime import datetime, timedelta
+from collections import Counter, defaultdict
+
+# math module
+print(math.pi, math.sqrt(16), math.factorial(5))
+
+# random module
+nums = [random.randint(1, 100) for _ in range(10)]
+print("Random:", nums)
+print("Choice:", random.choice(nums))
+
+# datetime
+now = datetime.now()
+tomorrow = now + timedelta(days=1)
+print("Today:", now.strftime("%Y-%m-%d"))
+print("Tomorrow:", tomorrow.strftime("%Y-%m-%d"))
+
+# Counter
+words = "the quick brown fox jumps over the lazy dog".split()
+freq = Counter(words)
+print("Most common:", freq.most_common(3))`,
+    body:`
+<h2>Importing Modules</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">python</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-python">import math                        # import whole module
+from math import sqrt, pi          # import specific names
+from math import sqrt as sq        # alias
+import math as m                   # alias whole module
+
+print(math.sqrt(16))   # 4.0
+print(sqrt(16))        # 4.0
+print(sq(16))          # 4.0
+print(m.pi)            # 3.14159...</code></pre></div>
+<h2>Useful Standard Library Modules</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">python</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-python">import os           # OS interaction
+import sys          # interpreter info
+import json         # JSON parsing
+import re           # regular expressions
+import random       # random numbers
+import datetime     # dates and times
+import pathlib      # modern file paths
+import collections  # Counter, deque, defaultdict
+import itertools    # product, permutations, combinations
+import functools    # reduce, lru_cache, partial</code></pre></div>
+<h2>Creating Your Own Module</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">python</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-python"># mymath.py
+def add(a, b): return a + b
+def square(x): return x ** 2
+PI = 3.14159
+
+# main.py
+import mymath
+print(mymath.add(3, 4))    # 7
+print(mymath.PI)            # 3.14159</code></pre></div>
+<h2>__name__ == '__main__'</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">python</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-python"># utils.py
+def helper():
+    return "helpful"
+
+# This block ONLY runs when utils.py is executed directly,
+# NOT when it's imported by another script
+if __name__ == '__main__':
+    print("Running as a script")
+    print(helper())</code></pre></div>
+<h2>Packages</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">python</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-python"># A package is a folder with __init__.py
+# mypackage/
+#   __init__.py
+#   utils.py
+#   models.py
+
+from mypackage import utils
+from mypackage.models import User
+
+# Install third-party packages
+# pip install requests numpy pandas</code></pre></div>`
+  },
+
+  'py-exceptions': {
+    lang:'python', title:'Exception Handling', level:'Intermediate', time:'18 min',
+    prev:'py-modules', next:'py-iterators',
+    editorLang:'python',
+    editorCode:`class InsufficientFundsError(Exception):
+    def __init__(self, amount, balance):
+        super().__init__(f"Cannot withdraw {amount}, balance is {balance}")
+        self.amount = amount
+        self.balance = balance
+
+def withdraw(balance, amount):
+    if amount <= 0:
+        raise ValueError("Amount must be positive")
+    if amount > balance:
+        raise InsufficientFundsError(amount, balance)
+    return balance - amount
+
+try:
+    bal = withdraw(100, 150)
+except InsufficientFundsError as e:
+    print(f"Error: {e}")
+    print(f"Tried: {e.amount}, Had: {e.balance}")
+except ValueError as e:
+    print(f"Invalid: {e}")
+else:
+    print(f"New balance: {bal}")
+finally:
+    print("Transaction attempt complete")`,
+    body:`
+<h2>try / except / else / finally</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">python</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-python">try:
+    result = 10 / 0
+except ZeroDivisionError as e:
+    print(f"Caught: {e}")           # runs on error
+except (TypeError, ValueError) as e:
+    print(f"Type or Value error")   # catch multiple types
+except Exception as e:
+    print(f"Unexpected: {e}")       # catch-all
+else:
+    print("No error occurred")      # runs only if no exception
+finally:
+    print("Always runs")            # runs no matter what</code></pre></div>
+<h2>Raising Exceptions</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">python</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-python">def divide(a, b):
+    if b == 0:
+        raise ValueError("Denominator cannot be zero")
+    return a / b
+
+# Re-raise
+try:
+    divide(1, 0)
+except ValueError:
+    print("Logging error...")
+    raise           # re-raises the same exception</code></pre></div>
+<h2>Custom Exceptions</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">python</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-python">class AppError(Exception):
+    """Base exception for this application."""
+    pass
+
+class ValidationError(AppError):
+    def __init__(self, field, message):
+        self.field = field
+        super().__init__(f"{field}: {message}")
+
+class NotFoundError(AppError):
+    pass
+
+try:
+    raise ValidationError("email", "invalid format")
+except ValidationError as e:
+    print(e.field, str(e))   # email: email: invalid format</code></pre></div>
+<div class="note-box"><strong>Best practice:</strong> Catch the <em>most specific</em> exception first. Catching bare <code class="inline-code">Exception</code> or <code class="inline-code">except:</code> hides bugs — only do it at the top level.</div>`
+  },
+
+  'py-iterators': {
+    lang:'python', title:'Iterators & Generators', level:'Intermediate', time:'26 min',
+    prev:'py-exceptions', next:'py-file-io',
+    editorLang:'python',
+    editorCode:`# Generator function — produces values lazily
+def fibonacci(limit):
+    a, b = 0, 1
+    while a <= limit:
+        yield a
+        a, b = b, a + b
+
+print("Fibonacci up to 100:")
+for n in fibonacci(100):
+    print(n, end=" ")
+print()
+
+# Infinite counter generator
+def counter(start=0, step=1):
+    n = start
+    while True:
+        yield n
+        n += step
+
+import itertools
+first_10_evens = list(itertools.islice(counter(0, 2), 10))
+print("First 10 evens:", first_10_evens)`,
+    body:`
+<h2>Iterators</h2>
+<p>Any object that implements <code class="inline-code">__iter__</code> and <code class="inline-code">__next__</code> is an iterator. <code class="inline-code">for</code> loops use this protocol.</p>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">python</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-python">class CountUp:
+    def __init__(self, stop):
+        self.current = 0
+        self.stop = stop
+
+    def __iter__(self):
+        return self           # iterable returns itself
+
+    def __next__(self):
+        if self.current >= self.stop:
+            raise StopIteration    # signals end of iteration
+        val = self.current
+        self.current += 1
+        return val
+
+for n in CountUp(5):
+    print(n)   # 0 1 2 3 4</code></pre></div>
+<h2>Generators with yield</h2>
+<p>A function that uses <code class="inline-code">yield</code> is a generator — it pauses at each <code class="inline-code">yield</code> and resumes next time <code class="inline-code">next()</code> is called. Memory-efficient: values are computed one at a time.</p>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">python</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-python">def squares(n):
+    for i in range(n):
+        yield i ** 2      # pause and return value
+
+gen = squares(5)
+next(gen)   # 0
+next(gen)   # 1
+next(gen)   # 4
+
+# Use in a for loop
+for sq in squares(5):
+    print(sq)             # 0 1 4 9 16
+
+# Generator expression (lazy list comprehension)
+gen = (x**2 for x in range(1_000_000))   # barely uses any memory</code></pre></div>
+<h2>yield from</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">python</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-python">def flatten(nested):
+    for item in nested:
+        if isinstance(item, list):
+            yield from flatten(item)   # delegate to sub-generator
+        else:
+            yield item
+
+list(flatten([1, [2, [3, 4]], 5]))   # [1, 2, 3, 4, 5]</code></pre></div>
+<h2>itertools — Powerful Combinators</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">python</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-python">import itertools
+
+list(itertools.islice(counter(), 5))      # [0,1,2,3,4] from infinite
+list(itertools.chain([1,2], [3,4]))       # [1,2,3,4]
+list(itertools.combinations([1,2,3], 2)) # [(1,2),(1,3),(2,3)]
+list(itertools.permutations("AB", 2))    # [('A','B'),('B','A')]</code></pre></div>`
+  },
+
+  'py-async': {
+    lang:'python', title:'Async / Await', level:'Advanced', time:'40 min',
+    prev:'py-file-io', next:'py-metaclasses',
+    editorLang:'python',
+    editorCode:`import asyncio
+
+async def fetch_data(name, delay):
+    print(f"{name}: starting...")
+    await asyncio.sleep(delay)       # simulate I/O wait
+    print(f"{name}: done after {delay}s")
+    return f"{name}_result"
+
+async def main():
+    # Run tasks concurrently (not sequentially)
+    task1 = asyncio.create_task(fetch_data("API-1", 2))
+    task2 = asyncio.create_task(fetch_data("API-2", 1))
+    task3 = asyncio.create_task(fetch_data("API-3", 3))
+
+    results = await asyncio.gather(task1, task2, task3)
+    print("All done:", results)
+
+asyncio.run(main())
+# Total time ~3s, not 6s — they run concurrently!`,
+    body:`
+<h2>What is Async?</h2>
+<p>Async allows your program to do other work <strong>while waiting for I/O</strong> (network, file, database). It's not parallel (no multiple CPU cores) — it's <em>concurrent</em> on one thread.</p>
+<h2>async def & await</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">python</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-python">import asyncio
+
+async def greet(name):            # coroutine function
+    await asyncio.sleep(1)        # yield control for 1 second
+    print(f"Hello, {name}!")
+
+# Run a single coroutine
+asyncio.run(greet("Alice"))       # entry point</code></pre></div>
+<h2>Running Coroutines Concurrently</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">python</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-python">async def task(name, delay):
+    await asyncio.sleep(delay)
+    return f"{name} done"
+
+async def main():
+    # gather runs all coroutines concurrently
+    results = await asyncio.gather(
+        task("A", 3),
+        task("B", 1),
+        task("C", 2),
+    )
+    print(results)   # takes 3s total, not 6s
+
+asyncio.run(main())</code></pre></div>
+<h2>async with & async for</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">python</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-python">import aiohttp   # pip install aiohttp
+
+async def download(url):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            return await response.text()
+
+# Async generator
+async def async_range(n):
+    for i in range(n):
+        await asyncio.sleep(0)   # yield control
+        yield i
+
+async def main():
+    async for val in async_range(5):
+        print(val)</code></pre></div>
+<div class="note-box"><strong>When to use async:</strong> Network requests, file I/O, database queries. <strong>Not useful for:</strong> CPU-heavy work (use multiprocessing instead) or simple scripts.</div>`
+  },
+
+  'py-metaclasses': {
+    lang:'python', title:'Metaclasses', level:'Advanced', time:'45 min',
+    prev:'py-async', next:'py-dsa-sorting',
+    editorLang:'python',
+    editorCode:`# Metaclass: controls how classes are created
+class Singleton(type):
+    _instances = {}
+
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super().__call__(*args, **kwargs)
+        return cls._instances[cls]
+
+class Database(metaclass=Singleton):
+    def __init__(self):
+        self.connected = False
+
+    def connect(self):
+        self.connected = True
+        print("Connected to DB")
+
+db1 = Database()
+db2 = Database()
+print(db1 is db2)   # True — same object!
+
+db1.connect()
+print(db2.connected)  # True — they're the same instance`,
+    body:`
+<h2>What is a Metaclass?</h2>
+<p>A metaclass is the <strong>class of a class</strong>. Just as a class controls how its instances behave, a metaclass controls how classes are created.</p>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">python</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-python">type(42)         # &lt;class 'int'&gt;   — type of an instance
+type(int)        # &lt;class 'type'&gt;  — type of a class
+type(type)       # &lt;class 'type'&gt;  — type is its own metaclass
+
+# type() can also CREATE a class dynamically
+Dog = type('Dog', (object,), {'speak': lambda self: 'Woof'})
+d = Dog()
+d.speak()   # Woof</code></pre></div>
+<h2>Writing a Metaclass</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">python</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-python">class AutoProperty(type):
+    """Automatically turns _x attributes into properties."""
+    def __new__(mcs, name, bases, namespace):
+        cls = super().__new__(mcs, name, bases, namespace)
+        for key in list(namespace):
+            if key.startswith('_') and not key.startswith('__'):
+                prop_name = key[1:]
+                setattr(cls, prop_name, property(lambda self, k=key: getattr(self, k)))
+        return cls
+
+class Point(metaclass=AutoProperty):
+    def __init__(self, x, y):
+        self._x = x
+        self._y = y
+
+p = Point(3, 4)
+print(p.x, p.y)   # 3 4</code></pre></div>
+<h2>__init_subclass__ — Simpler Alternative</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">python</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-python">class Plugin:
+    registry = {}
+
+    def __init_subclass__(cls, plugin_name=None, **kwargs):
+        super().__init_subclass__(**kwargs)
+        if plugin_name:
+            Plugin.registry[plugin_name] = cls
+
+class JSONPlugin(Plugin, plugin_name="json"):
+    pass
+
+class XMLPlugin(Plugin, plugin_name="xml"):
+    pass
+
+print(Plugin.registry)   # {'json': JSONPlugin, 'xml': XMLPlugin}</code></pre></div>`
+  },
+
+  'py-dsa-sorting': {
+    lang:'python', title:'DSA — Sorting & Searching', level:'Advanced', time:'50 min',
+    prev:'py-metaclasses', next:'py-dsa-trees',
+    editorLang:'python',
+    editorCode:`def merge_sort(arr):
+    if len(arr) <= 1:
+        return arr
+    mid = len(arr) // 2
+    left  = merge_sort(arr[:mid])
+    right = merge_sort(arr[mid:])
+    result, i, j = [], 0, 0
+    while i < len(left) and j < len(right):
+        if left[i] <= right[j]:
+            result.append(left[i]); i += 1
+        else:
+            result.append(right[j]); j += 1
+    return result + left[i:] + right[j:]
+
+def binary_search(arr, target):
+    lo, hi = 0, len(arr) - 1
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        if arr[mid] == target: return mid
+        elif arr[mid] < target: lo = mid + 1
+        else: hi = mid - 1
+    return -1
+
+nums = [64, 34, 25, 12, 22, 11, 90]
+sorted_nums = merge_sort(nums)
+print("Sorted:", sorted_nums)
+print("Search 25:", binary_search(sorted_nums, 25))`,
+    body:`
+<h2>Bubble Sort — O(n²)</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">python</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-python">def bubble_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        swapped = False
+        for j in range(0, n - i - 1):
+            if arr[j] > arr[j + 1]:
+                arr[j], arr[j+1] = arr[j+1], arr[j]
+                swapped = True
+        if not swapped:
+            break    # already sorted</code></pre></div>
+<h2>Merge Sort — O(n log n)</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">python</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-python">def merge_sort(arr):
+    if len(arr) <= 1:
+        return arr
+    mid = len(arr) // 2
+    left  = merge_sort(arr[:mid])
+    right = merge_sort(arr[mid:])
+
+    # Merge two sorted halves
+    result, i, j = [], 0, 0
+    while i < len(left) and j < len(right):
+        if left[i] <= right[j]:
+            result.append(left[i]); i += 1
+        else:
+            result.append(right[j]); j += 1
+    return result + left[i:] + right[j:]</code></pre></div>
+<h2>Quick Sort — O(n log n) avg</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">python</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-python">def quick_sort(arr):
+    if len(arr) <= 1:
+        return arr
+    pivot = arr[len(arr) // 2]
+    left   = [x for x in arr if x < pivot]
+    middle = [x for x in arr if x == pivot]
+    right  = [x for x in arr if x > pivot]
+    return quick_sort(left) + middle + quick_sort(right)</code></pre></div>
+<h2>Binary Search — O(log n)</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">python</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-python">def binary_search(arr, target):
+    lo, hi = 0, len(arr) - 1
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        if arr[mid] == target: return mid
+        elif arr[mid] < target: lo = mid + 1
+        else: hi = mid - 1
+    return -1   # not found
+
+import bisect
+bisect.bisect_left([1,3,5,7], 5)   # 2 — stdlib binary search</code></pre></div>
+<h2>Python built-ins</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">python</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-python">sorted([3,1,4,1,5])                      # new sorted list
+sorted(data, key=lambda x: x['age'])     # sort by key
+sorted(data, key=lambda x: x['age'], reverse=True)
+
+import heapq
+heapq.nlargest(3, nums)   # 3 largest
+heapq.nsmallest(3, nums)  # 3 smallest</code></pre></div>`
+  },
+
+  'py-dsa-trees': {
+    lang:'python', title:'DSA — Trees & Graphs', level:'Advanced', time:'60 min',
+    prev:'py-dsa-sorting', next:'py-ml-basics',
+    editorLang:'python',
+    editorCode:`from collections import deque
+
+class TreeNode:
+    def __init__(self, val):
+        self.val = val
+        self.left = self.right = None
+
+def insert_bst(root, val):
+    if not root: return TreeNode(val)
+    if val < root.val: root.left  = insert_bst(root.left, val)
+    else:              root.right = insert_bst(root.right, val)
+    return root
+
+def inorder(root, result=[]):
+    if root:
+        inorder(root.left, result)
+        result.append(root.val)
+        inorder(root.right, result)
+    return result
+
+def bfs(root):
+    if not root: return []
+    q, result = deque([root]), []
+    while q:
+        node = q.popleft()
+        result.append(node.val)
+        if node.left:  q.append(node.left)
+        if node.right: q.append(node.right)
+    return result
+
+root = None
+for v in [5, 3, 7, 1, 4, 6, 8]:
+    root = insert_bst(root, v)
+
+print("Inorder:", inorder(root, []))
+print("BFS:", bfs(root))`,
+    body:`
+<h2>Binary Tree & BST</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">python</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-python">class TreeNode:
+    def __init__(self, val):
+        self.val = val
+        self.left = self.right = None
+
+def insert(root, val):
+    if not root: return TreeNode(val)
+    if val &lt; root.val: root.left  = insert(root.left, val)
+    else:              root.right = insert(root.right, val)
+    return root
+
+def search(root, val):
+    if not root: return False
+    if root.val == val: return True
+    if val &lt; root.val: return search(root.left, val)
+    return search(root.right, val)</code></pre></div>
+<h2>Tree Traversals</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">python</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-python">def inorder(node):    # Left → Root → Right (sorted for BST)
+    if node:
+        inorder(node.left)
+        print(node.val, end=" ")
+        inorder(node.right)
+
+def preorder(node):   # Root → Left → Right
+    if node:
+        print(node.val, end=" ")
+        preorder(node.left)
+        preorder(node.right)
+
+def postorder(node):  # Left → Right → Root
+    if node:
+        postorder(node.left)
+        postorder(node.right)
+        print(node.val, end=" ")</code></pre></div>
+<h2>BFS — Level-Order Traversal</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">python</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-python">from collections import deque
+
+def bfs(root):
+    if not root: return []
+    queue, result = deque([root]), []
+    while queue:
+        node = queue.popleft()
+        result.append(node.val)
+        if node.left:  queue.append(node.left)
+        if node.right: queue.append(node.right)
+    return result</code></pre></div>
+<h2>Graph — DFS & BFS</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">python</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-python">graph = {0:[1,2], 1:[0,3], 2:[0,4], 3:[1], 4:[2]}
+
+def dfs(node, visited=None):
+    if visited is None: visited = set()
+    visited.add(node)
+    print(node, end=" ")
+    for nb in graph[node]:
+        if nb not in visited:
+            dfs(nb, visited)
+
+def bfs_graph(start):
+    visited = {start}
+    q = deque([start])
+    while q:
+        node = q.popleft()
+        print(node, end=" ")
+        for nb in graph[node]:
+            if nb not in visited:
+                visited.add(nb); q.append(nb)</code></pre></div>`
+  },
+
+  'py-ml-basics': {
+    lang:'python', title:'ML Basics with NumPy', level:'Advanced', time:'55 min',
+    prev:'py-dsa-trees', next:'py-testing',
+    editorLang:'python',
+    editorCode:`import numpy as np
+
+# Create arrays
+a = np.array([1, 2, 3, 4, 5])
+b = np.arange(0, 10, 2)          # [0,2,4,6,8]
+c = np.linspace(0, 1, 5)         # [0,.25,.5,.75,1]
+m = np.zeros((3, 3))             # 3x3 zeros matrix
+i = np.eye(3)                    # 3x3 identity matrix
+
+# Operations (all element-wise)
+print(a * 2)        # [2,4,6,8,10]
+print(a ** 2)       # [1,4,9,16,25]
+print(a + b[:5])    # element-wise add
+
+# Stats
+print("Mean:", a.mean())
+print("Std:", a.std())
+print("Sum:", a.sum())
+print("Max:", a.max(), "at index", a.argmax())
+
+# Matrix multiply
+A = np.array([[1,2],[3,4]])
+B = np.array([[5,6],[7,8]])
+print(A @ B)        # matrix product`,
+    body:`
+<h2>NumPy Basics</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">python</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-python">import numpy as np
+
+# Create arrays
+a = np.array([1, 2, 3])              # 1D
+m = np.array([[1,2],[3,4]])          # 2D matrix
+z = np.zeros((3, 4))                 # 3×4 zeros
+o = np.ones((2, 2))                  # 2×2 ones
+r = np.random.rand(3, 3)             # 3×3 random [0,1)
+i = np.eye(3)                        # 3×3 identity
+
+a.shape    # (3,)
+m.shape    # (2, 2)
+a.dtype    # dtype('int64')</code></pre></div>
+<h2>Array Operations — Broadcasting</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">python</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-python">a = np.array([1, 2, 3, 4, 5])
+
+a + 10        # [11, 12, 13, 14, 15]  — scalar broadcast
+a * 2         # [2, 4, 6, 8, 10]
+a ** 2        # [1, 4, 9, 16, 25]
+np.sqrt(a)    # [1, 1.41, 1.73, 2, 2.23]
+
+# Element-wise on two arrays
+b = np.array([10, 20, 30, 40, 50])
+a + b         # [11, 22, 33, 44, 55]</code></pre></div>
+<h2>Indexing & Slicing</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">python</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-python">m = np.array([[1,2,3],[4,5,6],[7,8,9]])
+
+m[1, 2]        # 6
+m[0:2, 1:3]    # [[2,3],[5,6]]  — slice rows 0-1, cols 1-2
+
+# Boolean indexing
+a = np.array([3, -1, 4, -1, 5])
+a[a > 0]       # [3, 4, 5]  — only positive values
+a[a < 0] = 0   # replace negatives with 0</code></pre></div>
+<h2>Linear Algebra</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">python</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-python">A = np.array([[2, 1], [1, 3]])
+b = np.array([5, 10])
+
+x = np.linalg.solve(A, b)   # solve Ax = b
+print(x)                     # [1. 3.]
+
+np.linalg.det(A)             # determinant: 5.0
+np.linalg.inv(A)             # inverse matrix
+vals, vecs = np.linalg.eig(A)  # eigenvalues, eigenvectors</code></pre></div>
+<div class="note-box"><strong>Next steps:</strong> With NumPy mastered, explore <strong>pandas</strong> (DataFrames), <strong>matplotlib</strong> (plotting), and <strong>scikit-learn</strong> (machine learning algorithms).</div>`
+  },
+
+  'py-testing': {
+    lang:'python', title:'Testing with pytest', level:'Advanced', time:'35 min',
+    prev:'py-ml-basics', next:null,
+    editorLang:'python',
+    editorCode:`# Functions to test
+def add(a, b): return a + b
+def divide(a, b):
+    if b == 0: raise ZeroDivisionError("Cannot divide by zero")
+    return a / b
+def is_palindrome(s):
+    s = s.lower().replace(" ", "")
+    return s == s[::-1]
+
+# Tests (normally in test_mymodule.py)
+import pytest
+
+def test_add():
+    assert add(2, 3) == 5
+    assert add(-1, 1) == 0
+    assert add(0, 0) == 0
+
+def test_divide():
+    assert divide(10, 2) == 5.0
+    with pytest.raises(ZeroDivisionError):
+        divide(5, 0)
+
+def test_palindrome():
+    assert is_palindrome("racecar")
+    assert is_palindrome("A man a plan a canal Panama")
+    assert not is_palindrome("hello")
+
+# Run: pytest test_mymodule.py -v`,
+    body:`
+<h2>Writing Tests with pytest</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">python</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-python"># test_math.py
+def add(a, b): return a + b
+
+def test_add_positive():
+    assert add(2, 3) == 5
+
+def test_add_negative():
+    assert add(-1, -2) == -3
+
+def test_add_zero():
+    assert add(0, 100) == 100</code></pre></div>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">bash</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-bash">pip install pytest
+pytest test_math.py          # run tests
+pytest test_math.py -v       # verbose output
+pytest -k "add"              # run tests matching "add"</code></pre></div>
+<h2>Testing Exceptions</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">python</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-python">import pytest
+
+def divide(a, b):
+    if b == 0: raise ZeroDivisionError
+    return a / b
+
+def test_divide_by_zero():
+    with pytest.raises(ZeroDivisionError):
+        divide(5, 0)
+
+def test_divide_message():
+    with pytest.raises(ZeroDivisionError, match="zero"):
+        raise ZeroDivisionError("division by zero")</code></pre></div>
+<h2>Fixtures</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">python</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-python">import pytest
+
+@pytest.fixture
+def sample_user():
+    return {"name": "Alice", "age": 25, "email": "alice@test.com"}
+
+def test_user_name(sample_user):
+    assert sample_user["name"] == "Alice"
+
+def test_user_age(sample_user):
+    assert sample_user["age"] >= 0</code></pre></div>
+<h2>Parametrize</h2>
+<div class="code-block"><div class="code-block-header"><span class="code-block-lang">python</span><button class="copy-btn">Copy</button></div>
+<pre><code class="language-python">@pytest.mark.parametrize("a, b, expected", [
+    (2, 3, 5),
+    (0, 0, 0),
+    (-1, 1, 0),
+    (100, -50, 50),
+])
+def test_add(a, b, expected):
+    assert add(a, b) == expected   # runs 4 times, once per row</code></pre></div>`
+  },
+
+});
+
+/* ── Fix prev/next on existing lessons to connect the new chain ── */
+// C++: oop now goes to inheritance (not stl directly)
+LESSONS['cpp-oop'].next        = 'cpp-inheritance';
+// C++: stl prev is inheritance, next is exceptions
+LESSONS['cpp-stl'].prev        = 'cpp-inheritance';
+LESSONS['cpp-stl'].next        = 'cpp-exceptions';
+
+// Python: comprehensions → modules (not file-io directly)
+LESSONS['py-comprehensions'].next = 'py-modules';
+// Python: file-io prev is iterators, next is async
+LESSONS['py-file-io'].prev       = 'py-iterators';
+LESSONS['py-file-io'].next       = 'py-async';
+
+
+/* ════════════════════════════════════════
    LESSON RENDERER
    Reads ?lang=xxx&topic=yyy from the URL
    and renders the correct lesson.
